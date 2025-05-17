@@ -19,14 +19,17 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
   
   const handleChange = (fieldName: string, value: string) => {
     const answer = state.answers[questionId];
-    const currentValues = (answer && typeof answer === 'object' && !Array.isArray(answer)) ? answer as Record<string, string> : {};
+    const currentValues = (answer && typeof answer === 'object' && !Array.isArray(answer)) 
+      ? answer as Record<string, string> 
+      : {};
+
     dispatch({
       type: 'SET_ANSWER',
       questionId,
       answer: {
         ...currentValues,
         [fieldName]: value
-      }
+      } as unknown as string // Type assertion to match the expected type
     });
   };
 
