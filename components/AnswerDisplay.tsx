@@ -1,10 +1,12 @@
+import type { ContactInfo } from '../types/form';
+
 interface AnswerDisplayProps {
   question: {
     id: string;
     isContactForm?: boolean;
     text: string;
   };
-  answer: any;
+  answer: string | string[] | ContactInfo;
 }
 
 export default function AnswerDisplay({ question, answer }: AnswerDisplayProps) {

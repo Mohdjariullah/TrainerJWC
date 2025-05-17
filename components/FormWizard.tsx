@@ -6,18 +6,7 @@ import questions from '@/lib/questions';
 import OptionButton from '@/components/OptionButton';
 import ProgressBar from '@/components/ProgressBar';
 import { useState } from 'react';
-
-interface ContactInfo {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-}
-
-interface FormAnswers {
-  [key: string]: string | string[] | ContactInfo;
-  contact_info?: ContactInfo;
-}
+import ContactForm from '@/components/ContactForm';
 
 export default function FormWizard() {
   const { state, dispatch } = useForm();
@@ -44,56 +33,50 @@ export default function FormWizard() {
   const handleSubmit = async () => {
     try {
       setSubmissionStatus('loading');
-      
-      // Get contact info from the last question
+        // Get the contact info from the last step
       const contactInfo = state.answers.contact_info || {};
       
+      // Build the final answers object excluding contact info
+      const otherAnswers = { ...state.answers };
+      delete otherAnswers.contact_info;
+      
+      // Format the data properly
+      const formData = {
+        answers: otherAnswers,
+        contact: typeof contactInfo === 'object' ? {
+          firstName: (contactInfo as Record<string, string>).firstName || '',
+          lastName: (contactInfo as Record<string, string>).lastName || '',
+          email: (contactInfo as Record<string, string>).email || '',
+          phone: (contactInfo as Record<string, string>).phone || ''
+        } : {
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: typeof contactInfo === 'string' ? contactInfo : ''
+        },
+        timestamp: new Date().toISOString()
+      };
+
+      // Log the data before sending
+      console.log('Sending form data:', formData);
+
       const response = await fetch('/api/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          // Form answers
-          answers: {
-            role: state.answers.role,
-            age: state.answers.age,
-            skill_level: state.answers.skill_level,
-            dream_goal: state.answers.dream_goal,
-            training_status: state.answers.training_status,
-            commitment_level: state.answers.commitment_level,
-            investment_willingness: state.answers.investment_willingness,
-            program_preferences: state.answers.program_preferences,
-            hesitation_reason: state.answers.hesitation_reason,
-            level_up: state.answers.level_up,
-          },
-          // Contact information
-          contact: {
-            firstName: contactInfo.firstName || '',
-            lastName: contactInfo.lastName || '',
-            email: contactInfo.email || '',
-            phone: contactInfo.phone || ''
-          },
-          timestamp: new Date().toISOString()
-        }),
+        body: JSON.stringify(formData)
       });
 
-      if (!response.ok) {
-        throw new Error('Submission failed');
-      }
-
       const result = await response.json();
-      if (result.success) {
-        setSubmissionStatus('success');
-      } else {
-        throw new Error(result.error || 'Submission failed');
-      }
+      setSubmissionStatus(result.success ? 'success' : 'error');
     } catch (error) {
       console.error('Submission error:', error);
       setSubmissionStatus('error');
       setErrorMessage('There was an error submitting your evaluation. Please try again in a few minutes.');
     }
   };
+
   // Show summary view
   if (showSummary) {
     return (
@@ -104,7 +87,8 @@ export default function FormWizard() {
             
             <div className="space-y-6 mb-12 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               {questions.map((question) => (
-                <div key={question.id} className="bg-[#2C2C2C] rounded-lg p-6">                  <p className="text-gray-400 mb-3">{question.text}</p>
+                <div key={question.id} className="bg-[#2C2C2C] rounded-lg p-6">
+                  <p className="text-gray-400 mb-3">{question.text}</p>
                   <div className="text-white text-lg">
                     {question.isContactForm ? (
                       <div className="grid grid-cols-2 gap-2">
@@ -112,13 +96,13 @@ export default function FormWizard() {
                           <>
                             <div className="text-gray-300">
                               <strong>Name:</strong>{' '}
-                              {`${(state.answers[question.id] as any).firstName || ''} ${(state.answers[question.id] as any).lastName || ''}`}
+                              {`${((state.answers[question.id] as import('@/types/form').ContactInfo)?.firstName || '')} ${((state.answers[question.id] as import('@/types/form').ContactInfo)?.lastName || '')}`}
                             </div>
                             <div className="text-gray-300">
-                              <strong>Email:</strong> {(state.answers[question.id] as any).email || ''}
+                              <strong>Email:</strong> {(state.answers[question.id] as import('@/types/form').ContactInfo)?.email || ''}
                             </div>
                             <div className="text-gray-300">
-                              <strong>Phone:</strong> {(state.answers[question.id] as any).phone || ''}
+                              <strong>Phone:</strong> {(state.answers[question.id] as import('@/types/form').ContactInfo)?.phone || ''}
                             </div>
                           </>
                         )}
@@ -199,35 +183,11 @@ export default function FormWizard() {
                 <h2 className="text-lg text-gray-400 mb-3 italic">{currentQuestion.title}</h2>
               )}
               <h1 className="text-4xl font-bold text-white mb-12 text-center max-w-3xl">{currentQuestion.text}</h1>
-                <div className="w-full space-y-4">
-                {currentQuestion.isContactForm ? (
-                  <div className="bg-[#1A1A1A] rounded-lg p-8 space-y-6">
-                    {currentQuestion.fields?.map((field) => (
-                      <div key={field.name} className="space-y-2">
-                        <label htmlFor={field.name} className="block text-gray-300 text-sm">
-                          {field.label}
-                        </label>
-                        <input
-                          type={field.type}
-                          id={field.name}
-                          name={field.name}
-                          required={field.required}
-                          className="w-full px-4 py-3 bg-[#2C2C2C] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                          placeholder={`Enter your ${field.label.toLowerCase()}`}
-                          onChange={(e) => {
-                            dispatch({
-                              type: 'SET_ANSWER',
-                              questionId: currentQuestion.id,
-                              answer: {
-                                ...state.answers[currentQuestion.id],
-                                [field.name]: e.target.value
-                              }
-                            });
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                <div className="w-full space-y-4">                {currentQuestion.isContactForm ? (
+                  <ContactForm 
+                    questionId={currentQuestion.id} 
+                    fields={currentQuestion.fields || []}
+                  />
                 ) : (
                   currentQuestion.options?.map((option) => (
                     <OptionButton 

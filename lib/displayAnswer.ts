@@ -5,7 +5,11 @@ type ContactInfo = {
   phone?: string;
 };
 
-export function displayAnswer(questionId: string, answer: any, isContactForm?: boolean) {
+export function displayAnswer(
+  questionId: string,
+  answer: string | string[] | ContactInfo | undefined,
+  isContactForm?: boolean
+) {
   if (!answer) return '';
   
   // Handle contact form
