@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    // const WEBHOOK_URL = 'https://primary-production-66f3.up.railway.app/webhook/0ce94605-f289-4dd0-aade-3ff35149a73b';
-    const WEBHOOK_URL = 'https://primary-production-66f3.up.railway.app/webhook-test/7d0f1118-df2a-489a-bbcd-f175d6ac212f';    
+    const WEBHOOK_URL = 'https://primary-production-66f3.up.railway.app/webhook/0ce94605-f289-4dd0-aade-3ff35149a73b';    
     // Get the request body
     const data = await request.json();
     console.log('Raw form data:', data);    // Make the webhook call with wrapped data format n8n expects
