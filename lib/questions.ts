@@ -15,6 +15,7 @@ export interface Question {
   maxSelections?: number;
   isContactForm?: boolean;
   fields?: ContactField[];
+  note?: string;
 }
 
 // Questions for the basketball evaluation
@@ -24,7 +25,8 @@ const questions: Question[] = [
     title: 'Just a Quick Question',
     text: "WHO'S TAKING THIS?",
     options: ['Athlete', 'Parent'],
-  },  {
+    note: "Parents: If you're filling this out for your athlete, please answer based on their age and abilities."
+  }, {
     id: 'age',
     text: "What's your current age group?",
     options: [

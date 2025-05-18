@@ -10,8 +10,7 @@ import ContactForm from '@/components/ContactForm';
 
 export default function FormWizard() {
   const { state, dispatch } = useForm();
-  const [showSummary, setShowSummary] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [showSummary, setShowSummary] = useState(false);  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
   const currentQuestion = questions[state.currentStep];
@@ -33,32 +32,40 @@ export default function FormWizard() {
   const handleSubmit = async () => {
     try {
       setSubmissionStatus('loading');
-        // Get the contact info from the last step
-      const contactInfo = state.answers.contact_info || {};
-      
-      // Build the final answers object excluding contact info
-      const otherAnswers = { ...state.answers };
-      delete otherAnswers.contact_info;
-      
-      // Format the data properly
+    
+      // Get contact info from the form state
+      const contactInfo = state.answers.contact_info;
+    
+      // Define ContactInfo type locally or import from your types if available
+      type ContactInfo = {
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        phone?: string;
+      };
+
       const formData = {
-        answers: otherAnswers,
-        contact: typeof contactInfo === 'object' ? {
-          firstName: (contactInfo as Record<string, string>).firstName || '',
-          lastName: (contactInfo as Record<string, string>).lastName || '',
-          email: (contactInfo as Record<string, string>).email || '',
-          phone: (contactInfo as Record<string, string>).phone || ''
+        answers: {
+          ...state.answers,
+          // Remove contact_info from answers to avoid duplication
+          contact_info: undefined
+        },
+        contact: typeof contactInfo === 'object' && !Array.isArray(contactInfo) ? {
+          firstName: (contactInfo as ContactInfo).firstName || '',
+          lastName: (contactInfo as ContactInfo).lastName || '',
+          email: (contactInfo as ContactInfo).email || '',
+          phone: (contactInfo as ContactInfo).phone || ''
         } : {
           firstName: '',
           lastName: '',
           email: '',
-          phone: typeof contactInfo === 'string' ? contactInfo : ''
+          phone: contactInfo || ''
         },
         timestamp: new Date().toISOString()
       };
 
-      // Log the data before sending
-      console.log('Sending form data:', formData);
+      // Store form state in localStorage
+      localStorage.setItem('formState', JSON.stringify(state));
 
       const response = await fetch('/api/webhook', {
         method: 'POST',
@@ -69,14 +76,17 @@ export default function FormWizard() {
       });
 
       const result = await response.json();
-      setSubmissionStatus(result.success ? 'success' : 'error');
+    
+      if (result.success) {
+        // Navigate to summary without exposing answers in URL
+        window.location.href = '/summary';
+      }
     } catch (error) {
       console.error('Submission error:', error);
       setSubmissionStatus('error');
       setErrorMessage('There was an error submitting your evaluation. Please try again in a few minutes.');
     }
   };
-
   // Show summary view
   if (showSummary) {
     return (
@@ -137,9 +147,7 @@ export default function FormWizard() {
               >
                 {submissionStatus === 'loading' ? 'Submitting...' : 'Submit'}
               </button>
-            </div>
-
-            {submissionStatus === 'success' && (
+            </div>            {submissionStatus === 'success' && (
               <div className="mt-8 p-4 bg-green-900/50 border border-green-500 text-green-100 rounded-lg text-center">
                 Thank you! Your responses have been submitted successfully.
               </div>
@@ -222,5 +230,6 @@ export default function FormWizard() {
         </div>
       </div>
     </div>
+
   );
-}
+};
