@@ -1,79 +1,28 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useForm } from '@/context/FormContext';
 import questions from '@/lib/questions';
 
 interface OptionButtonProps {
   questionId: string;
   option: string;
+  className?: string;
 }
 
-export default function OptionButton({ questionId, option }: OptionButtonProps) {
+
+export default function OptionButton({ option, questionId }: OptionButtonProps) {
   const { state, dispatch } = useForm();
-  const question = questions.find(q => q.id === questionId);
-  const isMultiSelect = question?.multiSelect;
-  const maxSelections = question?.maxSelections || 1;
+  const isSelected = state.answers[questionId] === option;
 
-  // For multi-select, we need to check if this option is in the array of answers
-  const currentAnswers = (state.answers[questionId] as string[] | string | undefined) || [];
-  const isSelected = isMultiSelect 
-    ? Array.isArray(currentAnswers) && (currentAnswers as string[]).includes(option)
-    : currentAnswers === option;
+  return (
+    <button
+      onClick={() => dispatch({ type: 'SET_ANSWER', questionId, answer: option })}
+      className={`w-full px-6 py-4 rounded-lg text-left transition-all duration-200 ${
 
-  const handleSelect = () => {
-    if (isMultiSelect) {
-      const answers = Array.isArray(currentAnswers) ? currentAnswers : [];
-
-      if (isSelected) {
-        // Remove the option if already selected
-        dispatch({
-          type: 'SET_ANSWER',
-          questionId,
-          answer: answers.filter(ans => ans !== option) as unknown as string,
-        });
-      } else if (answers.length < maxSelections) {
-        // Add the option if under max selections
-        dispatch({
-          type: 'SET_ANSWER',
-          questionId,
-          answer: [...answers, option] as unknown as string,
-        });
-
-        // Only proceed to next question if we've selected enough options
-        if (answers.length + 1 === maxSelections) {
-          setTimeout(() => {
-            dispatch({ type: 'NEXT_STEP' });
-          }, 500);
-        }
-      }
-    } else {
-      // Single select behavior
-      dispatch({
-        type: 'SET_ANSWER',
-        questionId,
-        answer: option,
-      });
-      setTimeout(() => {
-        dispatch({ type: 'NEXT_STEP' });
-      }, 500);
-    }
-  };    return (
-    <motion.button
-      onClick={handleSelect}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={`w-full py-4 px-8 text-center text-lg font-medium rounded-full transition-all ${
-        isSelected
-          ? 'bg-blue-500 text-white'
-          : 'bg-[#333333] text-white hover:bg-[#444444]'
+        isSelected ? 'bg-[#FCD34D] text-black' : 'bg-[#2C2C2C] text-gray-200 hover:bg-[#3C3C3C]'
       }`}
-      disabled={!isSelected && isMultiSelect && (currentAnswers as string[]).length >= maxSelections}
     >
       {option}
-    </motion.button>
+    </button>
   );
 }

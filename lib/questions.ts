@@ -21,7 +21,7 @@ export interface Question {
 const questions: Question[] = [
   {
     id: 'role',
-    title: 'Just a Quick Question',
+    title: undefined,
     text: "WHO'S TAKING THIS?",
     options: ['Athlete', 'Parent'],
     note: "Parents: If you're filling this out for your athlete, please answer based on their age and abilities.",
@@ -420,7 +420,7 @@ export const parentQuestions: Question[] = [
 export const PLAYER_TIERS = {
   CHOSEN_ONES: {
     minPoints: 22,
-    title: "The Chosen Ones",
+    title: "The Chosen One",
     description: "Your scores confirm it: you're already playing above your age group. Effort isn't your issue—efficient structure is. Right now raw talent is doing 90% of the work. With a proven D-1 framework you'll translate every rep to real games and separate from the pack.",
     nextStep: "Lock in a Train Like a Pro 1-on-1 call to claim one of the limited mentorship spots.",
     cta: {
@@ -450,13 +450,13 @@ export const PLAYER_TIERS = {
       buttons: [
         {
           type: "download",
-          text: "Download '5 Pro Drills' Guide",
-          link: "/guide-download"
+          text: "Train Like a Pro: Guidelines and drills for training",
+          link: "https://trainwjc.kit.com/01778085c8add"
         },
         {
           type: "discord",
           text: "Join Discord Community",
-          link: "https://discord.gg/dFnqKR5n"
+          link: "https://discord.gg/74gwhsPJ"
         }
       ]
     }

@@ -21,7 +21,7 @@ export default function SummaryPage() {
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold mb-12 text-center">Your Player Profile</h1>
-        {profile && <PlayerProfileDisplay profile={profile} />}
+        {profile && <PlayerProfileDisplay points={profile.totalPoints} />}
       </div>
     </div>
   );

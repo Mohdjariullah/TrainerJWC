@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { PLAYER_TIERS } from '@/lib/questions';
 
 interface PlayerProfileProps {
@@ -7,6 +8,25 @@ interface PlayerProfileProps {
 }
 
 export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1, y: 0, transition: { duration: 0.6, staggerChildren: 0.2 } },
+  };
+
+  const childVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
+
+  const progressVariants = {
+    hidden: { width: 0 },
+    visible: {
+      width: `${(points / 28) * 100}%`,
+      transition: { duration: 1, ease: "easeOut", delay: 0.5 }
+    }
+  };
+
   const getTier = () => {
     if (points >= PLAYER_TIERS.CHOSEN_ONES.minPoints) return PLAYER_TIERS.CHOSEN_ONES;
     if (points >= PLAYER_TIERS.RISING_STARS.minPoints) return PLAYER_TIERS.RISING_STARS;
@@ -14,37 +34,117 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
   };
 
   const tier = getTier();
-
   return (
-    <div className="bg-[#1A1A1A] rounded-xl p-8 space-y-6">
-      <h2 className="text-3xl font-bold text-white">{tier.title}</h2>
-      <p className="text-gray-300 text-lg">{tier.description}</p>
-      <p className="text-blue-400 font-medium">{tier.nextStep}</p>
-      
-      {'buttons' in tier.cta ? (
-        <div className="flex gap-4">
-          {tier.cta.buttons.map((button, index) => (
-            <a
-              key={index}
-              href={button.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
-            >
-              {button.text}
-            </a>
-          ))}
-        </div>
-      ) : (
-        <a
-          href={'link' in tier.cta ? tier.cta.link : '#'}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
+    <motion.div 
+      className="min-h-screen bg-black text-white py-12 px-4"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <div className="max-w-4xl mx-auto">
+        <motion.h1 
+          className="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent"
+          variants={childVariants}
         >
-          {'text' in tier.cta ? tier.cta.text : ''}
-        </a>
-      )}
-    </div>
+          Your Player Profile
+        </motion.h1>
+
+        <motion.div
+          className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
+          variants={childVariants}
+        >
+          <div className="absolute -inset-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 blur-3xl -z-10" />
+
+          <motion.h2 
+            className="text-3xl font-bold mb-6 text-yellow-400"
+            variants={childVariants}
+          >
+            {tier.title}
+          </motion.h2>
+          
+          <motion.div className="mb-8" variants={childVariants}>
+            <div className="flex justify-between text-sm mb-2">
+              <span>{points} points</span>
+              <span>28 max</span>
+            </div>
+            <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"
+                variants={progressVariants}
+              />
+            </div>
+          </motion.div>
+
+          <motion.p 
+            className="text-lg text-gray-300 leading-relaxed mb-6"
+            variants={childVariants}
+          >
+            {tier.description}
+          </motion.p>
+
+          <motion.div 
+            className="text-xl font-medium mb-8 text-yellow-400"
+            variants={childVariants}
+          >
+            {tier.nextStep}
+          </motion.div>
+
+          <motion.div variants={childVariants}>
+            {'buttons' in tier.cta ? (
+              <div className="flex flex-wrap gap-4">
+                {tier.cta.buttons.map((button, index) => (
+                  <motion.a
+                    key={index}
+                    href={button.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 min-w-[200px] bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {button.text}
+                  </motion.a>
+                ))}
+              </div>
+            ) : (
+              'link' in tier.cta && (
+                <motion.a
+                  href={tier.cta.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {'text' in tier.cta ? tier.cta.text : ''}
+                </motion.a>
+              )
+            )}
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="text-center mt-8"
+          variants={childVariants}
+        >
+          <motion.button 
+            className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-all duration-200"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: 'My Basketball Profile',
+                  text: `I'm a ${tier.title} with ${points} points!`,
+                  url: window.location.href
+                })
+              }
+            }}
+          >
+            Share My Results
+          </motion.button>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }

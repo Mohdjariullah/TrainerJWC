@@ -210,11 +210,18 @@ export default function FormWizard() {
                     />
                   ) : (
                     currentQuestion.options?.map((option) => (
-                      <OptionButton 
-                        key={option} 
-                        questionId={currentQuestion.id} 
-                        option={option} 
-                      />
+                      <motion.div
+                        key={option}
+                        whileTap={{ backgroundColor: '#FCD34D' }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <OptionButton 
+                          key={option} 
+                          questionId={currentQuestion.id} 
+                          option={option}
+                          className="bg-[#2C2C2C] hover:bg-[#3C3C3C] text-gray-200"
+                        />
+                      </motion.div>
                     ))
                   )
                 )}
@@ -252,6 +259,5 @@ export default function FormWizard() {
         </div>
       </div>
     </div>
-
   );
 };

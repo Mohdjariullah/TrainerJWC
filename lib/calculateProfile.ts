@@ -69,7 +69,7 @@ export function calculatePoints(answers: Record<string, string>): number {
 
 export function getProfileTier(points: number): string {
   if (points >= 22) {
-    return 'The Chosen Ones (Tier 1)';
+    return 'The Chosen One (Tier 1)';
   } else if (points >= 15) {
     return 'Rising Stars (Tier 2)';
   } else {
@@ -77,20 +77,8 @@ export function getProfileTier(points: number): string {
   }
 }
 
-function getSummaryForTier(tier: string): string {
-  switch (tier) {
-    case 'Tier 1: Elite Prospect':
-      return 'You are among the top prospects, showing elite potential and readiness for advanced opportunities.';
-    case 'Tier 2: Development Focus':
-      return 'You have a strong foundation and are on the path to higher performance with focused development.';
-    case 'Tier 3: Foundation Building':
-      return 'You are building your skills and mindset—keep working on the fundamentals for future growth.';
-    default:
-      return '';
-  }
-}
 
-function getNextStepForTier(tier: string): string {
+export function getNextStepForTier(tier: string): string {
   switch (tier) {
     case 'Tier 1: Elite Prospect':
       return 'Connect with advanced coaches and explore elite training programs.';
@@ -102,8 +90,7 @@ function getNextStepForTier(tier: string): string {
       return '';
   }
 }
-
-function getCtaForTier(tier: string): string {
+export function getCtaForTier(tier: string): string {
   switch (tier) {
     case 'Tier 1: Elite Prospect':
       return 'Apply for our Elite Training Program now!';
@@ -115,23 +102,61 @@ function getCtaForTier(tier: string): string {
       return '';
   }
 }
-
 export function calculatePlayerProfile(answers: Record<string, string>): PlayerProfile {
   const points = calculatePoints(answers);
-  const tier = getProfileTier(points);
-  
-  return {
-    tier: {
-      title: tier,
-      minPoints: points >= 22 ? 22 : points >= 15 ? 15 : 0,
-      summary: getSummaryForTier(tier),
-      nextStep: getNextStepForTier(tier),
+  let tier;
+
+  if (points >= 22) {
+    tier = {
+      title: 'The Chosen One (Tier 1)',
+      minPoints: 22,
+      summary: "Your scores confirm it: you're already playing above your age group. Effort isn't your issue—efficient structure is. Right now raw talent is doing 90% of the work. With a proven D-1 framework you'll translate every rep to real games and separate from the pack.",
+      nextStep: "Lock in a Train Like a Pro 1-on-1 call to claim one of the limited mentorship spots.",
       cta: {
-        type: 'calendly',
-        link: getCtaForTier(tier),
-        text: getCtaForTier(tier)
+        type: 'calendly' as const,
+        link: 'https://calendly.com/trainwjc/1-1-call-with-trainwjc?preview_source=et_card&month=2025-05',
+        text: 'Schedule Elite Training Call'
       }
-    },
+    };
+  } else if (points >= 15) {
+    tier = {
+      title: 'Rising Stars (Tier 2)',
+      minPoints: 15,
+      summary: "The data shows you've got the engine and the attitude. What's missing is a precise plan to turn hard work into measurable gains—vertical, strength, game IQ. Our mentorship bridges that gap so your work rate actually shows on the stat sheet.",
+      nextStep: "Book your strategy call to get a custom development plan.",
+      cta: {
+        type: 'calendly' as const,
+        link: 'https://calendly.com/trainwjc/1-1-call-with-trainwjc?preview_source=et_card&month=2025-05',
+        text: 'Book Train Like a Pro 1-on-1 call'
+      }
+    };
+  } else {
+    tier = {
+      title: 'Developing Prospect (Tier 3)',
+      minPoints: 0,
+      summary: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
+      nextStep: "Download the '5 Pro Drills' guide and join our community.",
+      cta: {
+        type: 'multiple',
+        buttons: [
+          {
+            type: 'download' as const,
+            text: "Train Like a Pro: Guidelines and drills for training",
+            link: 'https://trainwjc.kit.com/01778085c8add'
+          },
+          {
+            type: 'discord' as const,
+            text: 'Join Discord Community',
+
+            link: 'https://discord.gg/hwejYwBP'
+          }
+        ]
+      }
+    };
+  }
+
+  return {
+    tier,
     totalPoints: points,
     answers
   };
