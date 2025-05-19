@@ -108,7 +108,7 @@ export function calculatePlayerProfile(answers: Record<string, string>): PlayerP
 
   if (points >= 22) {
     tier = {
-      title: 'The Chosen One (Tier 1)',
+      title: 'The Chosen Ones (Tier 1)',
       minPoints: 22,
       summary: "Your scores confirm it: you're already playing above your age group. Effort isn't your issue—efficient structure is. Right now raw talent is doing 90% of the work. With a proven D-1 framework you'll translate every rep to real games and separate from the pack.",
       nextStep: "Lock in a Train Like a Pro 1-on-1 call to claim one of the limited mentorship spots.",
@@ -135,19 +135,18 @@ export function calculatePlayerProfile(answers: Record<string, string>): PlayerP
       title: 'Developing Prospect (Tier 3)',
       minPoints: 0,
       summary: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
-      nextStep: "Download the '5 Pro Drills' guide and join our community.",
+      nextStep: "Watch this breakdown of fundamental drills and join our community.",
       cta: {
         type: 'multiple',
         buttons: [
           {
-            type: 'download' as const,
-            text: "Train Like a Pro: Guidelines and drills for training",
-            link: 'https://trainwjc.kit.com/01778085c8add'
+            type: 'video' as const,
+            text: "Watch Training Breakdown",
+            link: 'https://www.youtube.com/watch?v=EJeZ65QR_X4'
           },
           {
             type: 'discord' as const,
             text: 'Join Discord Community',
-
             link: 'https://discord.gg/hwejYwBP'
           }
         ]

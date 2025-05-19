@@ -27,7 +27,7 @@ export default function ProgressBar({ currentStep, totalSteps }: ProgressBarProp
         aria-label={`Question ${adjustedCurrentStep} of ${adjustedTotalSteps}`}
       >
         <div 
-          className="h-full bg-[#22C55E] transition-all duration-500 ease-out rounded-full"
+          className="h-full bg-[#FCD34D] transition-all duration-500 ease-out rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>

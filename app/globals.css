@@ -169,3 +169,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: #2C2C2C;
+  border-radius: 3px;
+  height: 6px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: #FCD34D;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: #FCD34D;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
