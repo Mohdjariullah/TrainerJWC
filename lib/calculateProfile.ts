@@ -2,11 +2,12 @@ import type { PlayerProfile } from '@/types/playerProfile';
 
 export function calculatePoints(answers: Record<string, string>): number {
   let totalPoints = 0;
+  const isParent = answers.role === 'Parent';
 
   // Core questions (8 points possible)
   const corePoints = {
     age: {
-      'Under 14': 1,
+      'Under 14': isParent ? 2 : 1,
       '14-18 (High School)': 2,
       '18-22 (College)': 2,
       'Over 22': 2
@@ -135,15 +136,10 @@ export function calculatePlayerProfile(answers: Record<string, string>): PlayerP
       title: 'Developing Prospect (Tier 3)',
       minPoints: 0,
       summary: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
-      nextStep: "Watch this breakdown of fundamental drills and join our community.",
+      nextStep: "Join our community to start your journey.",
       cta: {
         type: 'multiple',
         buttons: [
-          {
-            type: 'video' as const,
-            text: "Watch Training Breakdown",
-            link: 'https://www.youtube.com/watch?v=EJeZ65QR_X4'
-          },
           {
             type: 'discord' as const,
             text: 'Join Discord Community',
@@ -154,9 +150,9 @@ export function calculatePlayerProfile(answers: Record<string, string>): PlayerP
     };
   }
 
+  // Only send points to n8n, don't return them in the profile
   return {
     tier,
-    totalPoints: points,
     answers
   };
 }

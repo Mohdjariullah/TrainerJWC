@@ -22,8 +22,8 @@ export async function POST(request: Request) {
       q10_competitive_drive: data.answers.competitive_drive?.toString() || '',
       q11_shooting_consistency: data.answers.shooting_consistency?.toString() || '',
       q12_finishing_contact: data.answers.finishing_contact?.toString() || '',
-      q13_game_situations: data.answers.game_situations?.toString() || '',
-      q14_physical_tools: data.answers.physical_tools?.toString() || '',
+      q13_game_situations: data.answers.game_situations?.toString() || 'Not answered',
+      q14_physical_tools: data.answers.physical_tools?.toString() || 'Not answered',
       q15_play_strengths: data.answers.play_strengths?.toString() || ''
     };
 

@@ -191,30 +191,22 @@ const questions: Question[] = [
   },
   {
     id: 'game_situations',
-    text: "Pick-and-roll reads, late-clock creation, transition.",
-    options: [
-      '8-10 (College-ready)',
-      '5-7 (Developing)', 
-      '1-4 (Beginner)'
-    ],
+    text: 'Pick-and-roll reads, late-clock creation, transition.',
+    options: ['8-10', '5-7', '1-4'],
     points: {
-      '8-10 (College-ready)': 2,
-      '5-7 (Developing)': 1,
-      '1-4 (Beginner)': 0
+      '8-10': 2,
+      '5-7': 1,
+      '1-4': 0
     }
   },
   {
     id: 'physical_tools',
-    text: "Using your physical tools (posting smaller guards, spacing vs. length, etc.).",
-    options: [
-      '8-10 (College-ready)',
-      '5-7 (Developing)',
-      '1-4 (Beginner)'
-    ],
+    text: 'Using your physical tools (posting smaller guards, spacing vs. length, etc.).',
+    options: ['8-10', '5-7', '1-4'],
     points: {
-      '8-10 (College-ready)': 2,
-      '5-7 (Developing)': 1,
-      '1-4 (Beginner)': 0
+      '8-10': 2,
+      '5-7': 1,
+      '1-4': 0
     }
   },
   {

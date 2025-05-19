@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { PLAYER_TIERS } from '@/lib/questions';
-
+import PLAYER_TIERS from '@/lib/questions';
 interface PlayerProfileProps {
   points: number;
 }
@@ -43,7 +42,7 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
     >
       <div className="max-w-4xl mx-auto">
         <motion.h1 
-          className="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent"
+          className="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
           variants={childVariants}
         >
           Your Player Profile
@@ -53,10 +52,10 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
           className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
           variants={childVariants}
         >
-          <div className="absolute -inset-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 blur-3xl -z-10" />
+          <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/10 to-orange-600/10 blur-3xl -z-10" />
 
           <motion.h2 
-            className="text-3xl font-bold mb-6 text-yellow-400"
+            className="text-3xl font-bold mb-6 text-orange-400"
             variants={childVariants}
           >
             {tier.title}
@@ -69,7 +68,7 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
             </div>
             <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"
+                className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
                 variants={progressVariants}
               />
             </div>
@@ -83,7 +82,7 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
           </motion.p>
 
           <motion.div 
-            className="text-xl font-medium mb-8 text-yellow-400"
+            className="text-xl font-medium mb-8 text-orange-400"
             variants={childVariants}
           >
             {tier.nextStep}
@@ -98,7 +97,7 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
                     href={button.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 min-w-[200px] bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+                    className="flex-1 min-w-[200px] bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/20"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -112,7 +111,7 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
                   href={tier.cta.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+                  className="block w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/20"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -128,7 +127,7 @@ export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
           variants={childVariants}
         >
           <motion.button 
-            className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-all duration-200"
+            className="bg-orange-500 hover:bg-orange-600 text-black px-6 py-3 rounded-lg transition-all duration-200"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
