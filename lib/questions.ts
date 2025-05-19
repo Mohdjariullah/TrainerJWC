@@ -421,34 +421,44 @@ export const PLAYER_TIERS = {
   CHOSEN_ONES: {
     minPoints: 22,
     title: "The Chosen Ones",
-    description: "Your athlete's scores show they're outperforming their peers. Their talent is clear—now they need structure. Our D-1 framework will unlock their full potential.",
-    nextStep: "Schedule a 1-on-1 'Train Like a Pro' call to claim a limited mentorship seat.",
+    description: "Your scores confirm it: you're already playing above your age group. Effort isn't your issue—efficient structure is. Right now raw talent is doing 90% of the work. With a proven D-1 framework you'll translate every rep to real games and separate from the pack.",
+    nextStep: "Lock in a Train Like a Pro 1-on-1 call to claim one of the limited mentorship spots.",
     cta: {
       type: "calendly",
-      link: "/schedule-call",
+      link: "https://calendly.com/trainwjc/1-1-call-with-trainwjc?preview_source=et_card&month=2025-05",
       text: "Schedule Elite Training Call"
     }
   },
   RISING_STARS: {
     minPoints: 15,
     title: "Rising Stars",
-    description: "The data shows your athlete has the work ethic and mindset. They need a targeted plan for vertical, strength, and IQ. Our mentorship bridges that gap.",
-    nextStep: "View a 2-minute program overview, then join a live Q&A to confirm fit.",
+    description: "The data shows you've got the engine and the attitude. What's missing is a precise plan to turn hard work into measurable gains—vertical, strength, game IQ. Our mentorship bridges that gap so your work rate actually shows on the stat sheet.",
+    nextStep: "Book your strategy call to get a custom development plan.",
     cta: {
-      type: "video",
-      link: "/training-overview",
-      text: "Watch Training Overview"
+      type: "calendly",
+      link: "https://calendly.com/trainwjc/1-1-call-with-trainwjc?preview_source=et_card&month=2025-05",
+      text: "Book Train Like a Pro 1-on-1 call"
     }
   },
   DEVELOPING_PROSPECT: {
     minPoints: 0,
     title: "Developing Prospect",
-    description: "Your athlete has strong fundamentals and the drive to improve. The next 90 days should focus on drills, confidence, and consistency. Start with our free drill pack.",
-    nextStep: "Download our '5 Pro Drills' guide and join the community Discord for accountability.",
+    description: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
+    nextStep: "Download the '5 Pro Drills' guide and join our community.",
     cta: {
-      type: "download",
-      link: "/pro-drills-guide",
-      text: "Download Free Drill Pack"
+      type: "multiple",
+      buttons: [
+        {
+          type: "download",
+          text: "Download '5 Pro Drills' Guide",
+          link: "/guide-download"
+        },
+        {
+          type: "discord",
+          text: "Join Discord Community",
+          link: "https://discord.gg/dFnqKR5n"
+        }
+      ]
     }
   }
 };

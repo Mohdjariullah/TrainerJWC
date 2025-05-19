@@ -16,9 +16,9 @@ export default function OptionButton({ questionId, option }: OptionButtonProps) 
   const maxSelections = question?.maxSelections || 1;
 
   // For multi-select, we need to check if this option is in the array of answers
-  const currentAnswers = state.answers[questionId] || [];
+  const currentAnswers = (state.answers[questionId] as string[] | string | undefined) || [];
   const isSelected = isMultiSelect 
-    ? Array.isArray(currentAnswers) && currentAnswers.includes(option)
+    ? Array.isArray(currentAnswers) && (currentAnswers as string[]).includes(option)
     : currentAnswers === option;
 
   const handleSelect = () => {
@@ -30,14 +30,14 @@ export default function OptionButton({ questionId, option }: OptionButtonProps) 
         dispatch({
           type: 'SET_ANSWER',
           questionId,
-          answer: answers.filter(ans => ans !== option),
+          answer: answers.filter(ans => ans !== option) as unknown as string,
         });
       } else if (answers.length < maxSelections) {
         // Add the option if under max selections
         dispatch({
           type: 'SET_ANSWER',
           questionId,
-          answer: [...answers, option],
+          answer: [...answers, option] as unknown as string,
         });
 
         // Only proceed to next question if we've selected enough options
@@ -54,11 +54,11 @@ export default function OptionButton({ questionId, option }: OptionButtonProps) 
         questionId,
         answer: option,
       });
-      dispatch({ type: 'NEXT_STEP' });
+      setTimeout(() => {
+        dispatch({ type: 'NEXT_STEP' });
+      }, 500);
     }
-  };
-  
-  return (
+  };    return (
     <motion.button
       onClick={handleSelect}
       initial={{ opacity: 0, y: 20 }}

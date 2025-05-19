@@ -3,8 +3,8 @@ import type { PlayerProfile } from '@/types/playerProfile';
 export function calculatePoints(answers: Record<string, string>): number {
   let totalPoints = 0;
 
-  // Background Block Points
-  const pointsMapping = {
+  // Core questions (8 points possible)
+  const corePoints = {
     age: {
       'Under 14': 1,
       '14-18 (High School)': 2,
@@ -31,42 +31,49 @@ export function calculatePoints(answers: Record<string, string>): number {
     }
   };
 
-  // Mindset and Skill Block Points (same scoring pattern)
-  const scalePointsMapping = {
-    '8-10 (Strongly Agree)': 2,
-    '8-10 (College-ready)': 2,
-    '5-7 (Somewhat Agree)': 1,
-    '5-7 (Developing)': 1,
-    '1-4 (Disagree)': 0,
-    '1-4 (Beginner)': 0
-  };
-
-  // Calculate points for each answer
-  Object.entries(answers).forEach(([key, value]) => {
-    if (typeof value === 'string') {
-      // Check if key is one of the keys in pointsMapping
-      if (key in pointsMapping) {
-        const mapping = pointsMapping[key as keyof typeof pointsMapping];
-        if (value in mapping) {
-          totalPoints += mapping[value as keyof typeof mapping];
-        }
-      }
-      if (value in scalePointsMapping) {
-        totalPoints += scalePointsMapping[value as keyof typeof scalePointsMapping];
-      }
+  // Add core points
+  Object.entries(corePoints).forEach(([key, pointMap]) => {
+    if (answers[key]) {
+      const map = pointMap as Record<string, number>;
+      totalPoints += map[answers[key]] || 0;
     }
+  });
+
+  // Mindset questions (10 points possible)
+  const mindsetQuestions = [
+    'confidence_pressure',
+    'training_transfer',
+    'self_direction',
+    'bounce_back',
+    'competitive_drive'
+  ];
+
+  // Skills questions (10 points possible)
+  const skillQuestions = [
+    'shooting_consistency',
+    'finishing_contact',
+    'game_situations',
+    'physical_tools',
+    'play_strengths'
+  ];
+
+  // Calculate points for both mindset and skills
+  [...mindsetQuestions, ...skillQuestions].forEach(question => {
+    const value = parseInt(answers[question]);
+    if (value >= 8) totalPoints += 2;
+    else if (value >= 5) totalPoints += 1;
   });
 
   return totalPoints;
 }
+
 export function getProfileTier(points: number): string {
-  // Maximum possible points: 28 (14 questions × 2 points max each)
   if (points >= 22) {
-    return 'Tier 1: Elite Prospect';
+    return 'The Chosen Ones (Tier 1)';
   } else if (points >= 15) {
-    return 'Tier 2: Development Focus';
+    return 'Rising Stars (Tier 2)';
   } else {
-    return 'Tier 3: Foundation Building';
+    return 'Developing Prospect (Tier 3)';
   }
 }
 

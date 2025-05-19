@@ -1,38 +1,50 @@
 'use client';
 
-import { PlayerProfile } from '@/types/playerProfile';
+import { PLAYER_TIERS } from '@/lib/questions';
 
-interface PlayerProfileDisplayProps {
-  profile: PlayerProfile;
+interface PlayerProfileProps {
+  points: number;
 }
 
-export default function PlayerProfileDisplay({ profile }: PlayerProfileDisplayProps) {
-  const { tier, totalPoints } = profile;
+export default function PlayerProfileDisplay({ points }: PlayerProfileProps) {
+  const getTier = () => {
+    if (points >= PLAYER_TIERS.CHOSEN_ONES.minPoints) return PLAYER_TIERS.CHOSEN_ONES;
+    if (points >= PLAYER_TIERS.RISING_STARS.minPoints) return PLAYER_TIERS.RISING_STARS;
+    return PLAYER_TIERS.DEVELOPING_PROSPECT;
+  };
+
+  const tier = getTier();
 
   return (
-    <div className="bg-[#1A1A1A] rounded-lg p-8 space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-2">{tier.title}</h2>
-        <div className="text-blue-400 text-sm">Score: {totalPoints} points</div>
-      </div>
-
-      <div className="space-y-6">
-        <div className="prose prose-invert">
-          <p className="text-gray-300">{tier.summary}</p>
+    <div className="bg-[#1A1A1A] rounded-xl p-8 space-y-6">
+      <h2 className="text-3xl font-bold text-white">{tier.title}</h2>
+      <p className="text-gray-300 text-lg">{tier.description}</p>
+      <p className="text-blue-400 font-medium">{tier.nextStep}</p>
+      
+      {'buttons' in tier.cta ? (
+        <div className="flex gap-4">
+          {tier.cta.buttons.map((button, index) => (
+            <a
+              key={index}
+              href={button.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
+            >
+              {button.text}
+            </a>
+          ))}
         </div>
-
-        <div className="border-t border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold text-white mb-3">Next Step</h3>
-          <p className="text-gray-300 mb-6">{tier.nextStep}</p>
-
-          <button 
-            onClick={() => window.open(tier.cta.link, '_blank')}
-            className="w-full px-6 py-3 bg-[#0D6EFD] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
-          >
-            {tier.cta.text}
-          </button>
-        </div>
-      </div>
+      ) : (
+        <a
+          href={'link' in tier.cta ? tier.cta.link : '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
+        >
+          {'text' in tier.cta ? tier.cta.text : ''}
+        </a>
+      )}
     </div>
   );
 }
