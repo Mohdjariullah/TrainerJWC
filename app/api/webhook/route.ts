@@ -1,11 +1,55 @@
 import { NextResponse } from 'next/server';
+import { calculatePoints, getProfileTier } from '@/lib/calculateProfile';
+
+const WEBHOOK_URL = 'https://nomad77.app.n8n.cloud/webhook/939f601d-b8db-4a09-827d-8d06d0f96938';
 
 export async function POST(request: Request) {
   try {
-    const WEBHOOK_URL = 'https://primary-production-66f3.up.railway.app/webhook-test/7d0f1118-df2a-489a-bbcd-f175d6ac212f';
-    
+    // Get the request body
     const data = await request.json();
-    console.log('Submitting to webhook:', data);
+    
+    // Add question numbers to the answers
+    const numberedAnswers = {
+      q1_role: data.answers.role,
+      q2_age: data.answers.age,
+      q3_dream_goal: data.answers.dream_goal,
+      q4_training_status: data.answers.training_status,
+      q5_investment_willingness: data.answers.investment_willingness,
+      q6_confidence_pressure: data.answers.confidence_pressure?.toString() || '',
+      q7_training_transfer: data.answers.training_transfer?.toString() || '',
+      q8_self_direction: data.answers.self_direction?.toString() || '',
+      q9_bounce_back: data.answers.bounce_back?.toString() || '',
+      q10_competitive_drive: data.answers.competitive_drive?.toString() || '',
+      q11_shooting_consistency: data.answers.shooting_consistency?.toString() || '',
+      q12_finishing_contact: data.answers.finishing_contact?.toString() || '',
+      q13_game_situations: data.answers.game_situations?.toString() || '',
+      q14_physical_tools: data.answers.physical_tools?.toString() || '',
+      q15_play_strengths: data.answers.play_strengths?.toString() || ''
+    };
+
+    const points = calculatePoints(data.answers);
+    const profileTier = getProfileTier(points);
+    
+    const enrichedData = {
+      answers: numberedAnswers,
+      contact: data.contact,
+      evaluation: {
+        points,
+        tier: profileTier
+      },
+      timestamp: new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      })
+    };
+
+    console.log('Submitting to webhook:', enrichedData);
 
     const response = await fetch(WEBHOOK_URL, {
       method: 'POST',
@@ -13,18 +57,20 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        data: {
-          ...data,
-          source: 'form-wizard'
-        }
+        data: enrichedData
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Webhook responded with status: ${response.status}`);
-    }
+    // Log the n8n response for debugging
+    const webhookResponse = await response.text();
+    console.log('n8n response status:', response.status);
+    console.log('n8n response body:', webhookResponse);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ 
+      success: true,
+      points,
+      tier: profileTier
+    });
   } catch (error) {
     console.error('Webhook error:', error);
     return NextResponse.json(
@@ -41,7 +87,7 @@ export async function OPTIONS() {
     {
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
       },
     }

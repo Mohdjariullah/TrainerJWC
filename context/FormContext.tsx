@@ -5,7 +5,7 @@ import questions from '@/lib/questions';
 
 // Define the shape of our form state
 interface FormState {
-  answers: Record<string, string | string[]>;
+  answers: Record<string, string>;
   currentStep: number;
   isSubmitting: boolean;
   isSubmitted: boolean;
@@ -14,7 +14,7 @@ interface FormState {
 
 // Define the actions we can dispatch
 type FormAction =
-  | { type: 'SET_ANSWER'; questionId: string; answer: string | string[] }
+  | { type: 'SET_ANSWER'; questionId: string; answer: string }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
   | { type: 'GO_TO_STEP'; step: number }

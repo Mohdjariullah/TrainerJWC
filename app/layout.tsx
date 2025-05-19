@@ -1,14 +1,10 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { FormProvider } from '@/context/FormContext';
+"use client";
 
-const inter = Inter({ subsets: ['latin'] });
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { FormProvider } from "@/context/FormContext";
 
-export const metadata: Metadata = {
-  title: 'Multi-Step Form Wizard',
-  description: 'A Next.js multi-step form wizard for evaluations',
-};
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -19,9 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <FormProvider>
-          <main className="h-screen w-screen">
-            {children}
-          </main>
+          <main className="h-screen w-screen">{children}</main>
         </FormProvider>
       </body>
     </html>

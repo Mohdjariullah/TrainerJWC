@@ -1,21 +1,26 @@
 'use client';
 
+'use client';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from '@/context/FormContext';
-import questions from '@/lib/questions';
+import questions, { parentQuestions } from '@/lib/questions';
 import OptionButton from '@/components/OptionButton';
 import ProgressBar from '@/components/ProgressBar';
 import { useState } from 'react';
 import ContactForm from '@/components/ContactForm';
+import RangeSlider from './RangeSlider';
 
 export default function FormWizard() {
   const { state, dispatch } = useForm();
-  const [showSummary, setShowSummary] = useState(false);  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [showSummary, setShowSummary] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const currentQuestion = questions[state.currentStep];
+  const currentQuestions = state.answers.role === 'Parent' ? parentQuestions : questions;
+  const currentQuestion = currentQuestions[state.currentStep];
   const isFirstQuestion = state.currentStep === 0;
-  const isLastQuestion = state.currentStep === questions.length - 1;
+  const isLastQuestion = state.currentStep === currentQuestions.length - 1;
   
   const handlePrevious = () => {
     if (state.currentStep > 0) {
@@ -29,43 +34,29 @@ export default function FormWizard() {
   const handleReviewAnswers = () => {
     setShowSummary(true);
   };
+
   const handleSubmit = async () => {
     try {
       setSubmissionStatus('loading');
-    
-      // Get contact info from the form state
-      const contactInfo = state.answers.contact_info;
-    
-      // Define ContactInfo type locally or import from your types if available
-      type ContactInfo = {
+      
+      // Get contact info from the last question
+      const contactInfo = (state.answers.contact_info || {}) as {
         firstName?: string;
         lastName?: string;
         email?: string;
         phone?: string;
       };
-
+      
       const formData = {
-        answers: {
-          ...state.answers,
-          // Remove contact_info from answers to avoid duplication
-          contact_info: undefined
-        },
-        contact: typeof contactInfo === 'object' && !Array.isArray(contactInfo) ? {
-          firstName: (contactInfo as ContactInfo).firstName || '',
-          lastName: (contactInfo as ContactInfo).lastName || '',
-          email: (contactInfo as ContactInfo).email || '',
-          phone: (contactInfo as ContactInfo).phone || ''
-        } : {
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: contactInfo || ''
+        answers: state.answers,
+        contact: {
+          firstName: contactInfo.firstName || '',
+          lastName: contactInfo.lastName || '',
+          email: contactInfo.email || '',
+          phone: contactInfo.phone || ''
         },
         timestamp: new Date().toISOString()
       };
-
-      // Store form state in localStorage
-      localStorage.setItem('formState', JSON.stringify(state));
 
       const response = await fetch('/api/webhook', {
         method: 'POST',
@@ -75,19 +66,21 @@ export default function FormWizard() {
         body: JSON.stringify(formData)
       });
 
-      const result = await response.json();
-    
-      if (result.success) {
-        // Navigate to summary without exposing answers in URL
+      const webhookResponse = await response.json();
+
+      if (webhookResponse.success) {
+        setSubmissionStatus('success');
+        localStorage.setItem('formState', JSON.stringify(state));
         window.location.href = '/summary';
+      } else {
+        throw new Error(webhookResponse.error || 'Submission failed');
       }
     } catch (error) {
       console.error('Submission error:', error);
       setSubmissionStatus('error');
       setErrorMessage('There was an error submitting your evaluation. Please try again in a few minutes.');
     }
-  };
-  // Show summary view
+  };  // Show summary view
   if (showSummary) {
     return (
       <div className="min-h-screen flex flex-col bg-black">
@@ -106,13 +99,13 @@ export default function FormWizard() {
                           <>
                             <div className="text-gray-300">
                               <strong>Name:</strong>{' '}
-                              {`${((state.answers[question.id] as import('@/types/form').ContactInfo)?.firstName || '')} ${((state.answers[question.id] as import('@/types/form').ContactInfo)?.lastName || '')}`}
+                              {`${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.firstName || '')} ${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.lastName || '')}`}
                             </div>
                             <div className="text-gray-300">
-                              <strong>Email:</strong> {(state.answers[question.id] as import('@/types/form').ContactInfo)?.email || ''}
+                              <strong>Email:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.email || ''}
                             </div>
                             <div className="text-gray-300">
-                              <strong>Phone:</strong> {(state.answers[question.id] as import('@/types/form').ContactInfo)?.phone || ''}
+                              <strong>Phone:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.phone || ''}
                             </div>
                           </>
                         )}
@@ -120,7 +113,7 @@ export default function FormWizard() {
                     ) : (
                       <div className="font-medium">
                         {Array.isArray(state.answers[question.id])
-                          ? (state.answers[question.id] as string[]).join(", ")
+                          ? ((state.answers[question.id] as unknown) as string[]).join(", ")
                           : state.answers[question.id] as string}
                       </div>
                     )}
@@ -164,10 +157,17 @@ export default function FormWizard() {
     );
   }
 
+  function handleNext(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    event.preventDefault();
+    if (state.currentStep < currentQuestions.length - 1) {
+      dispatch({ type: 'NEXT_STEP' });
+    }
+  }
+
   // Show question form
   return (
     <div className="min-h-screen flex flex-col bg-black">
-      {/* Progress bar fixed at top */}      {state.currentStep > 0 && (
+      {/* Progress bar */}{state.currentStep > 0 && (
         <div className="w-full py-6 border-b border-[#2C2C2C]">
           <div className="max-w-2xl mx-auto">
             <ProgressBar currentStep={state.currentStep} totalSteps={questions.length} />
@@ -197,17 +197,30 @@ export default function FormWizard() {
                     fields={currentQuestion.fields || []}
                   />
                 ) : (
-                  currentQuestion.options?.map((option) => (
-                    <OptionButton 
-                      key={option} 
-                      questionId={currentQuestion.id} 
-                      option={option} 
+                  currentQuestion.options?.some(option => option.includes('8-10')) ? (
+                    <RangeSlider
+                      onChange={(value) => {
+                        dispatch({
+                          type: 'SET_ANSWER',
+                          questionId: currentQuestion.id,
+                          answer: value.toString()
+                        });
+                      }}
+                      isAthlete={state.answers.role === 'Athlete'}
                     />
-                  ))
+                  ) : (
+                    currentQuestion.options?.map((option) => (
+                      <OptionButton 
+                        key={option} 
+                        questionId={currentQuestion.id} 
+                        option={option} 
+                      />
+                    ))
+                  )
                 )}
               </div>
 
-              <div className="mt-12 flex gap-4">
+              <div className="mt-12 flex gap-4 justify-between">
                 {!isFirstQuestion && (
                   <button
                     onClick={handlePrevious}
@@ -216,7 +229,16 @@ export default function FormWizard() {
                     Previous
                   </button>
                 )}
-                {isLastQuestion && state.answers[currentQuestion.id] && (
+                
+                {!isLastQuestion ? (
+                  <button
+                    onClick={handleNext}
+                    className="px-6 py-2 text-white bg-[#0D6EFD] rounded-md hover:opacity-90"
+                    disabled={!state.answers[currentQuestion.id]}
+                  >
+                    Next
+                  </button>
+                ) : (
                   <button
                     onClick={handleReviewAnswers}
                     className="px-6 py-2 text-white bg-[#0D6EFD] rounded-md hover:opacity-90"
