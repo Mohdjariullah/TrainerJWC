@@ -1,6 +1,8 @@
 'use client';
 
 import { useForm } from '@/context/FormContext';
+import { PhoneInput } from '@/components/phone-input';
+import type { Value } from 'react-phone-number-input';
 
 interface Field {
   name: string;
@@ -14,49 +16,75 @@ interface ContactFormProps {
   fields: Field[];
 }
 
+type ContactValues = Record<string, string>;
+
 export default function ContactForm({ questionId, fields }: ContactFormProps) {
   const { state, dispatch } = useForm();
-  
-  const handleChange = (fieldName: string, value: string) => {
-    const answer = state.answers[questionId];
-    const currentValues = (answer && typeof answer === 'object' && !Array.isArray(answer)) 
-      ? answer as Record<string, string> 
-      : {};
 
+  // Handle input change for a specific field
+  const handleChange = (fieldName: string, value: string) => {
+    const existing = getContactValues();
     dispatch({
       type: 'SET_ANSWER',
       questionId,
       answer: {
-        ...currentValues,
-        [fieldName]: value
-      } as unknown as string // Type assertion to match the expected type
+        ...existing,
+        [fieldName]: value,
+      },
     });
+  };
+
+  // Handle phone number specifically (Value type may be string | undefined)
+  const handlePhoneChange = (value: Value) => {
+    handleChange('phone', value?.toString() || '');
+  };
+
+  // Safely extract contact object from state
+  const getContactValues = (): ContactValues => {
+    const answer = state.answers[questionId];
+    if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
+      return answer as ContactValues;
+    }
+    return {};
+  };
+
+  const getValue = (fieldName: string): string => {
+    const values = getContactValues();
+    return values[fieldName] || '';
   };
 
   return (
     <div className="bg-[#1A1A1A] rounded-lg p-8 space-y-6">
       {fields.map((field) => (
         <div key={field.name} className="space-y-2">
-          <label htmlFor={field.name} className="block text-gray-300 text-sm">
+          <label
+            htmlFor={field.name}
+            className="block text-sm font-medium text-gray-300"
+          >
             {field.label}
           </label>
-          <input
-            type={field.type}
-            id={field.name}
-            name={field.name}
-            required={field.required}
-            value={
-              (state.answers[questionId] &&
-                typeof state.answers[questionId] === 'object' &&
-                !Array.isArray(state.answers[questionId])
-                  ? (state.answers[questionId] as Record<string, string>)[field.name]
-                  : ''
-              ) || ''
-            }
-            className="w-full px-4 py-3 bg-[#2C2C2C] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-            placeholder={`Enter your ${field.label.toLowerCase()}`}
-            onChange={(e) => handleChange(field.name, e.target.value)}
-          />
+
+          {field.type === 'tel' ? (
+            <PhoneInput
+              value={getValue(field.name)}
+              onChange={handlePhoneChange}
+              countryCallingCodeEditable={false}
+              international
+              defaultCountry="US"
+              className="!text-white !bg-[#2C2C2C] !border !border-gray-700 rounded-lg w-full px-4 py-3 focus:outline-none focus:border-blue-500"
+            />
+          ) : (
+            <input
+              type={field.type}
+              id={field.name}
+              name={field.name}
+              required={field.required}
+              value={getValue(field.name)}
+              onChange={(e) => handleChange(field.name, e.target.value)}
+              placeholder={`Enter your ${field.label.toLowerCase()}`}
+              className="w-full px-4 py-3 bg-[#2C2C2C] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+            />
+          )}
         </div>
       ))}
     </div>

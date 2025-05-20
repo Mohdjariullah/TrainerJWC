@@ -3,18 +3,21 @@
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 import questions from '@/lib/questions';
 
-// Define the shape of our form state
+// Updated: Allow each answer to be a string OR an object (e.g., contact form grouped fields)
+type AnswerValue = string | Record<string, string>;
+
+// Updated: FormState type
 interface FormState {
-  answers: Record<string, string>;
+  answers: Record<string, AnswerValue>;
   currentStep: number;
   isSubmitting: boolean;
   isSubmitted: boolean;
   error: string | null;
 }
 
-// Define the actions we can dispatch
+// Updated: Action allows both string and object answers
 type FormAction =
-  | { type: 'SET_ANSWER'; questionId: string; answer: string }
+  | { type: 'SET_ANSWER'; questionId: string; answer: AnswerValue }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
   | { type: 'GO_TO_STEP'; step: number }
@@ -23,7 +26,7 @@ type FormAction =
   | { type: 'SUBMIT_ERROR'; error: string }
   | { type: 'RESET_FORM' };
 
-// Define the context interface
+// Context interface
 interface FormContextType {
   state: FormState;
   dispatch: React.Dispatch<FormAction>;
@@ -42,10 +45,9 @@ const initialState: FormState = {
   error: null,
 };
 
-// Create the context
 const FormContext = createContext<FormContextType | undefined>(undefined);
 
-// Reducer function to handle state updates
+// Updated reducer
 function formReducer(state: FormState, action: FormAction): FormState {
   switch (action.type) {
     case 'SET_ANSWER':
@@ -96,17 +98,15 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
-// Provider component
+// Provider
 export function FormProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(formReducer, initialState);
-  
-  // Derived state
+
   const totalSteps = questions.length;
   const canGoNext = !!state.answers[questions[state.currentStep]?.id];
   const canGoPrevious = state.currentStep > 0;
   const isLastStep = state.currentStep === totalSteps - 1;
 
-  // Context value
   const value = {
     state,
     dispatch,
@@ -119,7 +119,6 @@ export function FormProvider({ children }: { children: ReactNode }) {
   return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
 }
 
-// Custom hook to use the form context
 export function useForm() {
   const context = useContext(FormContext);
   if (context === undefined) {
