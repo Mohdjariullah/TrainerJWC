@@ -20,10 +20,13 @@ export default function SummaryPage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-2xl mx-auto">
-        {playerProfile?.tier ? (
-          <PlayerProfileDisplay profile={playerProfile} />
-        ) : (
-          <div>Loading your profile...</div>
+        {playerProfile && (
+          <>
+            <h1 className="text-4xl font-bold mb-12 text-center">Your Player Profile</h1>
+            <PlayerProfileDisplay 
+              profile={playerProfile}
+            />
+          </>
         )}
       </div>
     </div>
