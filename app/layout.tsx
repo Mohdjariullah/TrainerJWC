@@ -14,6 +14,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      {/* =================================================================
+          Built by AIdaptics - We turn Complex ideas into effortless solutions.
+          Website: https://aidaptics.com
+          Instagram: @aidaptics
+          Discord: https://discord.gg/aidaptics
+          Twitter: @aidaptics
+          =================================================================
+      */}
       <body className={inter.className}>
         <Analytics />
         <FormProvider>
