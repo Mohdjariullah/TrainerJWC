@@ -101,7 +101,8 @@ export function getCtaForTier(tier: string): string {
     default:
       return '';
   }
-}
+} 
+// Function to calculate player profile
 export function calculatePlayerProfile(answers: Record<string, string>): PlayerProfile {
   const points = calculatePoints(answers);
   let tier;
