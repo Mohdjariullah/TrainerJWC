@@ -1,7 +1,6 @@
 'use client';
 
 import { useForm } from '@/context/FormContext';
-import questions from '@/lib/questions';
 
 interface OptionButtonProps {
   questionId: string;
@@ -9,14 +8,12 @@ interface OptionButtonProps {
   className?: string;
 }
 
-
 export default function OptionButton({ option, questionId }: OptionButtonProps) {
   const { state, dispatch } = useForm();
   const isSelected = state.answers[questionId] === option;
 
   const handleClick = () => {
     dispatch({ type: 'SET_ANSWER', questionId, answer: option });
-    // Auto advance to next question
     dispatch({ type: 'NEXT_STEP' });
   };
 
@@ -24,7 +21,6 @@ export default function OptionButton({ option, questionId }: OptionButtonProps) 
     <button
       onClick={handleClick}
       className={`w-full px-6 py-4 rounded-lg text-left transition-all duration-200 ${
-
         isSelected ? 'bg-[#FCD34D] text-black' : 'bg-[#2C2C2C] text-gray-200 hover:bg-[#3C3C3C]'
       }`}
     >
