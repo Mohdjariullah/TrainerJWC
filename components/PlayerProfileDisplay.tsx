@@ -1,25 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { PlayerProfile } from '@/types/playerProfile';
 
 interface PlayerProfileProps {
-  profile: {
-    tier: {
-      title: string;
-      summary: string;
-      nextStep: string;
-      cta: {
-        type: string;
-        buttons?: Array<{
-          type: string;
-          text: string;
-          link: string;
-        }>;
-        link?: string;
-        text?: string;
-      };
-    };
-  };
+  profile: PlayerProfile;
 }
 
 export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
