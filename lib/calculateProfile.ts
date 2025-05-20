@@ -4,7 +4,7 @@ export function calculatePoints(answers: Record<string, string>): number {
   let totalPoints = 0;
 
   // Core questions (8 points possible)
-  const corePoints = {
+  const corePoints: Record<string, Record<string, number>> = {
     role: {
       'Athlete': 2,
       'Parent': 1
@@ -103,7 +103,13 @@ export function getCtaForTier(tier: string): string {
   }
 } 
 // Fixed type mismatch for cta property
-export const PLAYER_TIERS = {
+import type { PlayerTier } from '@/types/playerProfile';
+
+export const PLAYER_TIERS: {
+  CHOSEN_ONES: PlayerTier;
+  RISING_STARS: PlayerTier;
+  DEVELOPING_PROSPECT: PlayerTier;
+} = {
   CHOSEN_ONES: {
     title: 'The Chosen One',
     minPoints: 22,

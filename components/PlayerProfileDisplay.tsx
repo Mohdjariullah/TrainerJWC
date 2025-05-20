@@ -2,10 +2,24 @@
 
 import { motion } from 'framer-motion';
 
-import type { PlayerProfile } from '@/types/playerProfile';
-
 interface PlayerProfileProps {
-  profile: PlayerProfile;
+  profile: {
+    tier: {
+      title: string;
+      summary: string;
+      nextStep: string;
+      cta: {
+        type: string;
+        buttons?: Array<{
+          type: string;
+          text: string;
+          link: string;
+        }>;
+        link?: string;
+        text?: string;
+      };
+    };
+  };
 }
 
 export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
@@ -30,7 +44,8 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
         
         <div className="bg-[#2C2C2C] rounded-2xl p-8 shadow-2xl">
           <h2 className="text-3xl font-bold mb-6">{profile.tier.title}</h2>
-          <p className="text-lg text-gray-300 leading-relaxed mb-6">{profile.tier.summary}</p>          <div className="text-xl font-medium mb-8">{profile.tier.nextStep}</div>
+          <p className="text-lg text-gray-300 leading-relaxed mb-6">{profile.tier.summary}</p>
+          <div className="text-xl font-medium mb-8">{profile.tier.nextStep}</div>
           
           {profile.tier.cta.type === 'multiple' && profile.tier.cta.buttons ? (
             <div className="flex flex-col space-y-4">
