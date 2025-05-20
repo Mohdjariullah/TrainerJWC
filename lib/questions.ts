@@ -20,31 +20,20 @@ export interface Question {
 
 const questions: Question[] = [
   {
-    id: 'role',
-    title: undefined,
+    id: 'q1_role',
+    title: 'Just a Quick Question',
     text: "WHO'S TAKING THIS?",
     options: ['Athlete', 'Parent'],
-    note: "Parents: If you're filling this out for your athlete, please answer based on their age and abilities.",
-    points: {
-      'Athlete': 0,
-      'Parent': 0
-    }
+    note: "Parents: If you're filling this out for your athlete, please answer based on their age and abilities."
   }, {
-    id: 'age',
-    text: "What's your current age group?",
-    note: "Parents: Please select your athlete's age group, not your own.",
+    id: 'q2_age',
+    text: "What is your athlete's age group?",
     options: [
       'Under 14',
       '14-18 (High School)',
       '18-22 (College)',
       'Over 22'
-    ],
-    points: {
-      'Under 14': 1,
-      '14-18 (High School)': 2,
-      '18-22 (College)': 2,
-      'Over 22': 2
-    }
+    ]
   },  {
     id: 'dream_goal',
     text: "What's your biggest basketball dream? (Pick your top goal)",
@@ -448,7 +437,7 @@ export const PLAYER_TIERS = {
         {
           type: "discord",
           text: "Join Discord Community",
-          link: "https://discord.gg/74gwhsPJ"
+          link: "https://discord.gg/hwejYwBP"
         }
       ]
     }

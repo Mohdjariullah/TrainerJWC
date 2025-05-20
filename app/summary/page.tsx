@@ -11,7 +11,7 @@ export default function SummaryPage() {
   useEffect(() => {
     const formState = localStorage.getItem('formState');
     if (formState) {
-      const answers = JSON.parse(formState).answers;
+      const { answers } = JSON.parse(formState);
       const playerProfile = calculatePlayerProfile(answers);
       setProfile(playerProfile);
     }
@@ -20,8 +20,7 @@ export default function SummaryPage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-12 text-center">Your Player Profile</h1>
-        {profile && <PlayerProfileDisplay points={profile.totalPoints} />}
+        {profile && <PlayerProfileDisplay profile={profile} />}
       </div>
     </div>
   );

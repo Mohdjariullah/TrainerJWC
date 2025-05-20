@@ -89,37 +89,42 @@ export default function FormWizard() {
             <h2 className="text-4xl font-bold text-white mb-12 text-center">Review Your Answers</h2>
             
             <div className="space-y-6 mb-12 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-              {questions.map((question) => (
-                <div key={question.id} className="bg-[#2C2C2C] rounded-lg p-6">
-                  <p className="text-gray-400 mb-3">{question.text}</p>
-                  <div className="text-white text-lg">
-                    {question.isContactForm ? (
-                      <div className="grid grid-cols-2 gap-2">
-                        {state.answers[question.id] && typeof state.answers[question.id] === 'object' && (
-                          <>
-                            <div className="text-gray-300">
-                              <strong>Name:</strong>{' '}
-                              {`${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.firstName || '')} ${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.lastName || '')}`}
-                            </div>
-                            <div className="text-gray-300">
-                              <strong>Email:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.email || ''}
-                            </div>
-                            <div className="text-gray-300">
-                              <strong>Phone:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.phone || ''}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="font-medium">
-                        {Array.isArray(state.answers[question.id])
-                          ? ((state.answers[question.id] as unknown) as string[]).join(", ")
-                          : state.answers[question.id] as string}
-                      </div>
-                    )}
+              {questions
+                .filter((question) =>
+                  question.text !== 'Pick-and-roll reads, late-clock creation, transition.' &&
+                  question.text !== 'Using your physical tools (posting smaller guards, spacing vs. length, etc.).'
+                )
+                .map((question) => (
+                  <div key={question.id} className="bg-[#2C2C2C] rounded-lg p-6">
+                    <p className="text-gray-400 mb-3">{question.text}</p>
+                    <div className="text-white text-lg">
+                      {question.isContactForm ? (
+                        <div className="grid grid-cols-2 gap-2">
+                          {state.answers[question.id] && typeof state.answers[question.id] === 'object' && (
+                            <>
+                              <div className="text-gray-300">
+                                <strong>Name:</strong>{' '}
+                                {`${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.firstName || '')} ${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.lastName || '')}`}
+                              </div>
+                              <div className="text-gray-300">
+                                <strong>Email:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.email || ''}
+                              </div>
+                              <div className="text-gray-300">
+                                <strong>Phone:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.phone || ''}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="font-medium">
+                          {Array.isArray(state.answers[question.id])
+                            ? ((state.answers[question.id] as unknown) as string[]).join(", ")
+                            : state.answers[question.id] as string}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div className="flex justify-between items-center">

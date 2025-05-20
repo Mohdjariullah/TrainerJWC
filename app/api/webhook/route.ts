@@ -37,19 +37,12 @@ export async function POST(request: Request) {
         points,
         tier: profileTier
       },
-      timestamp: new Date().toLocaleString('en-US', {
-        timeZone: 'Asia/Kolkata',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      })
+      timestamp: new Date().toISOString()
     };
 
     console.log('Submitting to webhook:', enrichedData);
+    console.log('Calculated Points:', points);
+    console.log('Assigned Tier:', profileTier);
 
     const response = await fetch(WEBHOOK_URL, {
       method: 'POST',
