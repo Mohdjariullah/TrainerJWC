@@ -1,12 +1,19 @@
+export interface CTAButton {
+  type: string;
+  text: string;
+  link: string;
+}
+
 export interface PlayerTier {
   title: string;
   minPoints: number;
   summary: string;
   nextStep: string;
   cta: {
-    type: 'calendly' | 'video' | 'download';
-    link: string;
-    text: string;
+    type: 'calendly' | 'video' | 'download' | 'multiple';
+    link?: string;
+    text?: string;
+    buttons?: CTAButton[];
   };
 }
 

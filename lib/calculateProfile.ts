@@ -102,49 +102,6 @@ export function getCtaForTier(tier: string): string {
       return '';
   }
 } 
-// Function to calculate player profile
-export function calculatePlayerProfile(answers: Record<string, string>): PlayerProfile {
-  const points = calculatePoints(answers);
-  let tier;
-
-  if (points >= 22) {
-    tier = {
-      title: 'The Chosen One',
-      summary: "Your scores confirm it: you're already playing above your age group. Effort isn't your issue—efficient structure is. Right now raw talent is doing 90% of the work. With a proven D-1 framework you'll translate every rep to real games and separate from the pack.",
-      nextStep: "Lock in a Train Like a Pro 1-on-1 call to claim one of the limited mentorship spots.",
-      cta: {
-        type: 'calendly',
-        link: 'https://calendly.com/trainwjc/1-1-call-with-trainwjc?preview_source=et_card&month=2025-05',
-        text: 'Schedule Elite Training Call'
-      }
-    };
-  } else if (points >= 15) {
-    tier = {
-      title: 'Rising Stars',
-      summary: "The data shows you've got the engine and the attitude. What's missing is a precise plan to turn hard work into measurable gains—vertical, strength, game IQ. Our mentorship bridges that gap so your work rate actually shows on the stat sheet.",
-      nextStep: "Book your strategy call to get a custom development plan.",
-      cta: {
-        type: 'calendly',
-        link: 'https://calendly.com/trainwjc/1-1-call-with-trainwjc?preview_source=et_card&month=2025-05',
-        text: 'Book Train Like a Pro 1-1 call'
-      }
-    };
-  } else {
-    tier = {
-      title: 'Developing Prospect',
-      summary: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
-      nextStep: "Download the 5 Pro Drills Guide.",
-      cta: {
-        type: 'calendly',
-        link: 'https://trainwjc.kit.com/01778085c8',
-        text: 'Download the 5 Pro Drills Guide'
-      }
-    };
-  }
-
-  return { tier, answers };
-}
-
 // Fixed type mismatch for cta property
 export const PLAYER_TIERS = {
   CHOSEN_ONES: {
@@ -175,10 +132,38 @@ export const PLAYER_TIERS = {
     summary: 'You\'ve got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps.',
     nextStep: 'Download the \'5 Pro Drills\' guide and join our community.',
     cta: {
-      type: 'calendly',
-      link: 'https://trainwjc.kit.com/01778085c8',
-      text: 'Download the 5 Pro Drills Guide'
-    },
-    minPoints: 0 // Added missing minPoints property
+      type: 'multiple',
+      buttons: [
+        {
+          type: 'download',
+          text: 'Download the 5 Pro Drills Guide',
+          link: 'https://trainwjc.kit.com/01778085c8'
+        },
+        {
+          type: 'discord',
+          text: 'Join Discord Community',
+          link: 'https://discord.gg/hwejYwBP'
+        }
+      ]
+    }
   }
 };
+
+// Function to calculate player profile
+export function calculatePlayerProfile(answers: Record<string, string>): PlayerProfile {
+  const points = calculatePoints(answers);
+  let tier;
+
+  if (points >= PLAYER_TIERS.CHOSEN_ONES.minPoints) {
+    tier = PLAYER_TIERS.CHOSEN_ONES;
+  } else if (points >= PLAYER_TIERS.RISING_STARS.minPoints) {
+    tier = PLAYER_TIERS.RISING_STARS;
+  } else {
+    tier = PLAYER_TIERS.DEVELOPING_PROSPECT;
+  }
+  return {
+    tier,
+    answers,
+    totalPoints: points
+  };
+}
