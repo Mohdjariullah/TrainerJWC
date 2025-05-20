@@ -8,13 +8,18 @@ export async function POST(request: Request) {
     // Get the request body
     const data = await request.json();
     
-    // Add question numbers to the answers
-    const numberedAnswers = {
-      q1_role: data.answers.role,
-      q2_age: data.answers.age,
-      q3_dream_goal: data.answers.dream_goal,
-      q4_training_status: data.answers.training_status,
-      q5_investment_willingness: data.answers.investment_willingness,
+
+    console.log('Original data received:', data);
+    
+    // Map the answers to the expected format
+    const answers = {
+
+
+      q1_role: data.answers.role || 'Athlete', // Default to Athlete if not specified
+      q2_age: data.answers.age || '14-18 (High School)', // Default to high school age if not specified
+      q3_dream_goal: data.answers.dream_goal || '',
+      q4_training_status: data.answers.training_status || '',
+      q5_investment_willingness: data.answers.investment_willingness || '',
       q6_confidence_pressure: data.answers.confidence_pressure?.toString() || '',
       q7_training_transfer: data.answers.training_transfer?.toString() || '',
       q8_self_direction: data.answers.self_direction?.toString() || '',
@@ -22,16 +27,24 @@ export async function POST(request: Request) {
       q10_competitive_drive: data.answers.competitive_drive?.toString() || '',
       q11_shooting_consistency: data.answers.shooting_consistency?.toString() || '',
       q12_finishing_contact: data.answers.finishing_contact?.toString() || '',
-      q13_game_situations: data.answers.game_situations?.toString() || 'Not answered',
-      q14_physical_tools: data.answers.physical_tools?.toString() || 'Not answered',
+      q13_game_situations: data.answers.game_situations?.toString() || '',
+      q14_physical_tools: data.answers.physical_tools?.toString() || '',
       q15_play_strengths: data.answers.play_strengths?.toString() || ''
     };
 
-    const points = calculatePoints(data.answers);
+
+    // Make sure we're calculating points with the complete data
+    const calculationData = {
+      ...data.answers,
+      role: data.answers.role || 'Athlete',
+      age: data.answers.age || '14-18 (High School)'
+    };
+    
+    const points = calculatePoints(calculationData);
     const profileTier = getProfileTier(points);
     
     const enrichedData = {
-      answers: numberedAnswers,
+      answers,
       contact: data.contact,
       evaluation: {
         points,
