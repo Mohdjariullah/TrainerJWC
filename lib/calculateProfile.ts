@@ -132,7 +132,7 @@ export function calculatePlayerProfile(answers: Record<string, string>): PlayerP
     tier = {
       title: 'Developing Prospect',
       summary: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
-      nextStep: "Join our community to start your journey.",
+      nextStep: "Download the 5 Pro Drills Guide.",
       cta: {
         type: 'calendly',
         link: 'https://trainwjc.kit.com/01778085c8',
@@ -174,30 +174,10 @@ export const PLAYER_TIERS = {
     summary: 'You\'ve got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps.',
     nextStep: 'Download the \'5 Pro Drills\' guide and join our community.',
     cta: {
-      type: 'multiple',
-      buttons: [
-        {
-          type: 'download',
-          text: 'Download the 5 Pro Drills Guide',
-          link: 'https://trainwjc.kit.com/01778085c8'
-        },
-        {
-          type: 'discord',
-          text: 'Join Discord Community',
-          link: 'https://discord.gg/hwejYwBP'
-        }
-      ]
-    }
-  }
-};
-
-// Add athlete profile summary at the end
-export const ATHLETE_PROFILE_SUMMARY = {
-  summary: 'You\'ve got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps.',
-  nextStep: 'Download the \'5 Pro Drills\' guide and join our community.',
-  cta: {
-    type: 'calendly',
-    link: 'https://trainwjc.kit.com/01778085c8',
-    text: 'Download the 5 Pro Drills Guide'
+      type: 'calendly',
+      link: 'https://trainwjc.kit.com/01778085c8',
+      text: 'Download the 5 Pro Drills Guide'
+    },
+    minPoints: 0 // Added missing minPoints property
   }
 };
