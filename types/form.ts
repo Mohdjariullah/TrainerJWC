@@ -3,6 +3,7 @@ export interface ContactInfo {
   lastName: string;
   email: string;
   phone: string;
+  instagram?: string; // Add Instagram field
 }
 
 export interface FormAnswers {
@@ -31,4 +32,3 @@ export interface AnimationProps {
     damping?: number;
   };
 }
-       
