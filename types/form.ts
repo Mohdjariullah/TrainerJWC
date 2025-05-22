@@ -14,3 +14,21 @@ export interface FormState {
   currentStep: number;
   answers: FormAnswers;
 }
+
+// Animation types
+export type AnimationVariant = 'hidden' | 'visible' | 'exit';
+
+export interface AnimationProps {
+  initial?: AnimationVariant;
+  animate?: AnimationVariant;
+  exit?: AnimationVariant;
+  transition?: {
+    duration?: number;
+    delay?: number;
+    ease?: string;
+    type?: string;
+    stiffness?: number;
+    damping?: number;
+  };
+}
+       

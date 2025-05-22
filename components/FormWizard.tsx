@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from '@/context/FormContext';
 import questions, { parentQuestions } from '@/lib/questions';
@@ -21,6 +19,19 @@ export default function FormWizard() {
   const currentQuestion = currentQuestions[state.currentStep];
   const isFirstQuestion = state.currentStep === 0;
   const isLastQuestion = state.currentStep === currentQuestions.length - 1;
+  
+  // Add the missing isFormComplete function
+  const isFormComplete = () => {
+    if (!currentQuestion.isContactForm || !currentQuestion.fields) return true;
+    
+    const contactInfo = state.answers[currentQuestion.id] as Record<string, string> || {};
+    
+    return currentQuestion.fields.every(field => {
+      // Last name is optional, all others are required
+      if (field.name === 'lastName') return true;
+      return !!contactInfo[field.name];
+    });
+  };
   
   const handlePrevious = () => {
     if (state.currentStep > 0) {
@@ -112,6 +123,9 @@ export default function FormWizard() {
                               <div className="text-gray-300">
                                 <strong>Phone:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.phone || ''}
                               </div>
+                              <div className="text-gray-300">
+                                <strong>Instagram:</strong> {(state.answers[question.id] as unknown as Record<string, string>)?.instagram || ''}
+                              </div>
                             </>
                           )}
                         </div>
@@ -171,7 +185,7 @@ export default function FormWizard() {
 
   // Show question form
   return (
-    <div className="min-h-screen flex flex-col bg-black">
+    <div className="min-h-screen flex flex-col bg-black pb-20">
       {/* Progress bar */}{state.currentStep > 0 && (
         <div className="w-full py-6 border-b border-[#2C2C2C]">
           <div className="max-w-2xl mx-auto">
@@ -231,36 +245,40 @@ export default function FormWizard() {
                   )
                 )}
               </div>
-
-              <div className="mt-12 flex gap-4 justify-between">
-                {!isFirstQuestion && (
-                  <button
-                    onClick={handlePrevious}
-                    className="px-6 py-2 text-white bg-[#2C2C2C] rounded-md hover:bg-[#3C3C3C]"
-                  >
-                    Previous
-                  </button>
-                )}
-                
-                {!isLastQuestion ? (
-                  <button
-                    onClick={handleNext}
-                    className="px-6 py-2 text-white bg-[#0D6EFD] rounded-md hover:opacity-90"
-                    disabled={!state.answers[currentQuestion.id]}
-                  >
-                    Next
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleReviewAnswers}
-                    className="px-6 py-2 text-white bg-[#0D6EFD] rounded-md hover:opacity-90"
-                  >
-                    Review Answers
-                  </button>
-                )}
-              </div>
             </motion.div>
           </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Fixed navigation buttons at bottom of screen - show for ALL questions */}
+      <div className="fixed bottom-0 left-0 w-full bg-black border-t border-gray-800 p-2 z-50">
+        <div className="max-w-md mx-auto flex px-4">
+          {!isFirstQuestion && (
+            <button
+              onClick={handlePrevious}
+              className="flex-1 mr-2 py-3 px-4 bg-[#1e293b] text-white font-medium rounded-lg transition-colors text-base"
+            >
+              Previous
+            </button>
+          )}
+          
+          {!isLastQuestion ? (
+            <button
+              onClick={(e) => handleNext(e)}
+              className="flex-1 ml-2 py-3 px-4 bg-[#0D6EFD] text-white font-medium rounded-lg transition-colors text-base"
+              disabled={!state.answers[currentQuestion.id]}
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              onClick={handleReviewAnswers}
+              className="flex-1 ml-2 py-3 px-4 bg-[#0D6EFD] text-white font-medium rounded-lg transition-colors text-base"
+              disabled={currentQuestion.isContactForm && !isFormComplete()}
+            >
+              Review Answers
+            </button>
+          )}
         </div>
       </div>
     </div>

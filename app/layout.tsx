@@ -29,11 +29,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="bg-black">
+      <head>
+        <style>{`
+          body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: black;
+          }
+          
+          html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+          }
+        `}</style>
+      </head>
+      <body className={`${inter.className} bg-black overflow-x-hidden`}>
         <CommentInjector />
         <FormProvider>
-          <main className="h-screen w-screen">{children}</main>
+         
+          <main className="min-h-screen w-full relative z-10 overflow-x-hidden bg-black">
+            {children}
+          </main>
         </FormProvider>
       </body>
     </html>

@@ -8,13 +8,14 @@ export async function POST(request: Request) {
     // Get the request body
     const data = await request.json();
     
-
     console.log('Original data received:', data);
+    
+    // Get Instagram value from contact_info object
+    const contactInfo = data.answers.contact_info || {};
+    const instagram = contactInfo.instagram || '';
     
     // Map the answers to the expected format
     const answers = {
-
-
       q1_role: data.answers.role || 'Athlete', // Default to Athlete if not specified
       q2_age: data.answers.age || '14-18 (High School)', // Default to high school age if not specified
       q3_dream_goal: data.answers.dream_goal || '',
@@ -32,7 +33,6 @@ export async function POST(request: Request) {
       q15_play_strengths: data.answers.play_strengths?.toString() || ''
     };
 
-
     // Make sure we're calculating points with the complete data
     const calculationData = {
       ...data.answers,
@@ -45,7 +45,13 @@ export async function POST(request: Request) {
     
     const enrichedData = {
       answers,
-      contact: data.contact,
+      contact: {
+        firstName: data.contact?.firstName || contactInfo.firstName || '',
+        lastName: data.contact?.lastName || contactInfo.lastName || '',
+        email: data.contact?.email || contactInfo.email || '',
+        phone: data.contact?.phone || contactInfo.phone || '',
+        instagram: instagram // Add Instagram field from contact_info
+      },
       evaluation: {
         points,
         tier: profileTier
@@ -56,6 +62,7 @@ export async function POST(request: Request) {
     console.log('Submitting to webhook:', enrichedData);
     console.log('Calculated Points:', points);
     console.log('Assigned Tier:', profileTier);
+    console.log('Instagram Username:', instagram);
 
     const response = await fetch(WEBHOOK_URL, {
       method: 'POST',
