@@ -92,14 +92,6 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
       }];
 
   // Check if all required fields are filled
-  const isFormComplete = () => {
-    const values = getContactValues();
-    return allFields.every(field => {
-      // Last name is optional, all others are required
-      if (field.name === 'lastName') return true;
-      return !!values[field.name];
-    });
-  };
 
   return (
     <motion.div 
@@ -131,7 +123,7 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
               countryCallingCodeEditable={false}
               international
               defaultCountry="US"
-              className="!text-white !bg-[#2C2C2C] !border !border-gray-700 rounded-lg w-full px-4 py-3 focus:outline-none focus:border-blue-500"
+              // className="!text-white !bg-[#2C2C2C] !border !border-gray-700 rounded-lg w-full px-4 py-3 focus:outline-none focus:border-blue-500"
               onFocus={() => setFocusedField(field.name)}
               onBlur={() => setFocusedField(null)}
               required={field.name !== 'lastName'}
