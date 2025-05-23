@@ -5,7 +5,6 @@ import { PhoneInput } from '@/components/phone-input';
 import type { Value } from 'react-phone-number-input';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-
 import { ContactInfo } from '@/types/form';
 
 interface ContactFormProps {
@@ -18,13 +17,10 @@ interface ContactFormProps {
   }>;
 }
 
-type ContactValues = Partial<ContactInfo>;
-
 export default function ContactForm({ questionId, fields }: ContactFormProps) {
   const { state, dispatch } = useForm();
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Handle input change for a specific field
   const handleChange = (fieldName: string, value: string) => {
     const existing = getContactValues();
     dispatch({
@@ -33,30 +29,27 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
       answer: {
         ...existing,
         [fieldName]: value,
-      },
+      } as ContactInfo
     });
   };
 
-  // Handle phone number specifically (Value type may be string | undefined)
   const handlePhoneChange = (value: Value) => {
     handleChange('phone', value?.toString() || '');
   };
 
-  // Safely extract contact object from state
-  const getContactValues = (): ContactValues => {
+  const getContactValues = (): Partial<ContactInfo> => {
     const answer = state.answers[questionId];
     if (answer && typeof answer === 'object' && !Array.isArray(answer)) {
-      return answer as ContactValues;
+      return answer as Partial<ContactInfo>;
     }
     return {};
   };
 
   const getValue = (fieldName: string): string => {
     const values = getContactValues();
-    return values[fieldName] || '';
+    return values[fieldName as keyof ContactInfo] || '';
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -77,11 +70,10 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
   };
 
   const labelVariants = {
-    focused: { y: -5, scale: 0.9, color: '#FCD34D' },
+    focused: { y: -5, scale: 0.9, color: '#FFE44D' },
     blurred: { y: 0, scale: 1, color: '#9CA3AF' }
   };
 
-  // Add Instagram field to the fields array if it doesn't exist
   const allFields = fields.some(field => field.name === 'instagram') 
     ? fields 
     : [...fields, { 
@@ -138,14 +130,13 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
                 value={getValue(field.name)}
                 onChange={(e) => handleChange(field.name, e.target.value)}
                 placeholder={field.name === 'instagram' ? '@yourusername' : `Enter your ${field.label.toLowerCase()}`}
-                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#FCD34D]/30 rounded-lg text-white focus:outline-none focus:border-[#FCD34D] transition-all duration-200"
+                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#FFE44D]/30 rounded-lg text-white focus:outline-none focus:border-[#FFE44D] transition-all duration-200"
                 onFocus={() => setFocusedField(field.name)}
                 onBlur={() => setFocusedField(null)}
               />
             </motion.div>
           )}
           
-          {/* Animated validation indicator */}
           {getValue(field.name) && (
             <motion.div
               initial={{ scale: 0, opacity: 0 }}

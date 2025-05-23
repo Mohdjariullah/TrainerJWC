@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 
-
 interface PlayerProfileProps {
   profile: {
     tier: {
@@ -22,12 +21,11 @@ interface PlayerProfileProps {
       };
     };
     totalPoints: number;
-    answers: Record<string, string | number | string[] | undefined>;
+    answers: Record<string, any>;
   };
 }
 
 export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
-  // Safely check if profile and tier exist
   if (!profile || !profile.tier) {
     return (
       <div className="min-h-screen bg-black text-white py-12 px-4 flex items-center justify-center">
@@ -40,10 +38,6 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
   }
 
   const { tier } = profile;
-  
-  // Debug logging
-  console.log('PlayerProfileDisplay - Profile:', profile);
-  console.log('PlayerProfileDisplay - Tier:', tier.title);
   
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -78,10 +72,10 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
           className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
           variants={childVariants}
         >
-          <div className="absolute -inset-2 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 blur-3xl -z-10" />
+          <div className="absolute -inset-2 bg-gradient-to-r from-[#FFE44D]/10 to-[#FFD700]/10 blur-3xl -z-10" />
 
           <motion.h2 
-            className="text-3xl font-bold mb-6 text-yellow-400"
+            className="text-3xl font-bold mb-6 text-[#FFE44D]"
             variants={childVariants}
           >
             {tier.title}
@@ -95,7 +89,7 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
           </motion.p>
 
           <motion.div 
-            className="text-xl font-medium mb-8 text-yellow-400"
+            className="text-xl font-medium mb-8 text-[#FFE44D]"
             variants={childVariants}
           >
             {tier.nextStep}
@@ -104,13 +98,26 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
           <motion.div variants={childVariants}>
             {tier.cta.type === 'multiple' && tier.cta.buttons ? (
               <div className="flex flex-wrap gap-4">
+                {/* Download Guide Button */}
+                <motion.a
+                  href="https://trainwjc.kit.com/01778085c8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-w-[200px] bg-gradient-to-r from-[#FFE44D] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FFC800] text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-[#FFE44D]/20"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Download the 5 Drill program
+                </motion.a>
+                
+                {/* Discord Community Button */}
                 {tier.cta.buttons.map((button, index) => (
                   <motion.a
                     key={index}
                     href={button.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 min-w-[200px] bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+                    className="flex-1 min-w-[200px] bg-gradient-to-r from-[#FFE44D] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FFC800] text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-[#FFE44D]/20"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -124,7 +131,7 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
                   href={tier.cta.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+                  className="block w-full bg-gradient-to-r from-[#FFE44D] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FFC800] text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-[#FFE44D]/20"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -133,28 +140,6 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
               )
             )}
           </motion.div>
-        </motion.div>
-
-        <motion.div
-          className="text-center mt-8"
-          variants={childVariants}
-        >
-          <motion.button 
-            className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-all duration-200"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({
-                  title: 'My Basketball Profile',
-                  text: `I'm a ${tier.title}!`,
-                  url: window.location.href
-                })
-              }
-            }}
-          >
-            Share My Results
-          </motion.button>
         </motion.div>
       </div>
     </motion.div>
