@@ -20,19 +20,6 @@ export default function FormWizard() {
   const isFirstQuestion = state.currentStep === 0;
   const isLastQuestion = state.currentStep === currentQuestions.length - 1;
   
-  // Add the missing isFormComplete function
-  const isFormComplete = () => {
-    if (!currentQuestion.isContactForm || !currentQuestion.fields) return true;
-    
-    const contactInfo = state.answers[currentQuestion.id] as Record<string, string> || {};
-    
-    return currentQuestion.fields.every(field => {
-      // Last name is optional, all others are required
-      if (field.name === 'lastName') return true;
-      return !!contactInfo[field.name];
-    });
-  };
-  
   const handlePrevious = () => {
     if (state.currentStep > 0) {
       dispatch({ type: 'PREV_STEP' });
@@ -56,6 +43,7 @@ export default function FormWizard() {
         lastName?: string;
         email?: string;
         phone?: string;
+        instagram?: string;
       };
       
       const formData = {
@@ -64,10 +52,13 @@ export default function FormWizard() {
           firstName: contactInfo.firstName || '',
           lastName: contactInfo.lastName || '',
           email: contactInfo.email || '',
-          phone: contactInfo.phone || ''
+          phone: contactInfo.phone || '',
+          instagram: contactInfo.instagram || ''
         },
         timestamp: new Date().toISOString()
       };
+
+      console.log('Submitting form data:', formData);
 
       const response = await fetch('/api/webhook', {
         method: 'POST',
@@ -91,7 +82,9 @@ export default function FormWizard() {
       setSubmissionStatus('error');
       setErrorMessage('There was an error submitting your evaluation. Please try again in a few minutes.');
     }
-  };  // Show summary view
+  };
+
+  // Show summary view
   if (showSummary) {
     return (
       <div className="min-h-screen flex flex-col bg-black">
@@ -100,45 +93,40 @@ export default function FormWizard() {
             <h2 className="text-4xl font-bold text-white mb-12 text-center">Review Your Answers</h2>
             
             <div className="space-y-6 mb-12 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-              {questions
-                .filter((question) =>
-                  question.text !== 'Pick-and-roll reads, late-clock creation, transition.' &&
-                  question.text !== 'Using your physical tools (posting smaller guards, spacing vs. length, etc.).'
-                )
-                .map((question) => (
-                  <div key={question.id} className="bg-[#2C2C2C] rounded-lg p-6">
-                    <p className="text-gray-400 mb-3">{question.text}</p>
-                    <div className="text-white text-lg">
-                      {question.isContactForm ? (
-                        <div className="grid grid-cols-2 gap-2">
-                          {state.answers[question.id] && typeof state.answers[question.id] === 'object' && (
-                            <>
-                              <div className="text-gray-300">
-                                <strong>Name:</strong>{' '}
-                                {`${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.firstName || '')} ${((state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.lastName || '')}`}
-                              </div>
-                              <div className="text-gray-300">
-                                <strong>Email:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.email || ''}
-                              </div>
-                              <div className="text-gray-300">
-                                <strong>Phone:</strong> {(state.answers[question.id] as unknown as import('@/types/form').ContactInfo)?.phone || ''}
-                              </div>
-                              <div className="text-gray-300">
-                                <strong>Instagram:</strong> {(state.answers[question.id] as unknown as Record<string, string>)?.instagram || ''}
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="font-medium">
-                          {Array.isArray(state.answers[question.id])
-                            ? ((state.answers[question.id] as unknown) as string[]).join(", ")
-                            : state.answers[question.id] as string}
-                        </div>
-                      )}
-                    </div>
+              {currentQuestions.map((question) => (
+                <div key={question.id} className="bg-[#2C2C2C] rounded-lg p-6">
+                  <p className="text-gray-400 mb-3">{question.text}</p>
+                  <div className="text-white text-lg">
+                    {question.isContactForm ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {state.answers[question.id] && typeof state.answers[question.id] === 'object' && (
+                          <>
+                            <div className="text-gray-300">
+                              <strong>Name:</strong>{' '}
+                              {`${((state.answers[question.id] as any)?.firstName || '')} ${((state.answers[question.id] as any)?.lastName || '')}`}
+                            </div>
+                            <div className="text-gray-300">
+                              <strong>Email:</strong> {(state.answers[question.id] as any)?.email || ''}
+                            </div>
+                            <div className="text-gray-300">
+                              <strong>Phone:</strong> {(state.answers[question.id] as any)?.phone || ''}
+                            </div>
+                            <div className="text-gray-300">
+                              <strong>Instagram:</strong> {(state.answers[question.id] as any)?.instagram || ''}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="font-medium">
+                        {Array.isArray(state.answers[question.id])
+                          ? ((state.answers[question.id] as unknown) as string[]).join(", ")
+                          : state.answers[question.id] as string}
+                      </div>
+                    )}
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
 
             <div className="flex justify-between items-center">
@@ -151,7 +139,7 @@ export default function FormWizard() {
               <button
                 onClick={handleSubmit}
                 disabled={submissionStatus === 'loading'}
-                className={`px-8 py-3 bg-[#0D6EFD] text-white rounded-full font-medium ${
+                className={`px-8 py-3 bg-[#FFC400FF] text-black rounded-full font-medium ${
                   submissionStatus === 'loading' 
                     ? 'opacity-75 cursor-wait' 
                     : 'hover:opacity-90 transition-opacity'
@@ -159,7 +147,9 @@ export default function FormWizard() {
               >
                 {submissionStatus === 'loading' ? 'Submitting...' : 'Submit'}
               </button>
-            </div>            {submissionStatus === 'success' && (
+            </div>
+
+            {submissionStatus === 'success' && (
               <div className="mt-8 p-4 bg-green-900/50 border border-green-500 text-green-100 rounded-lg text-center">
                 Thank you! Your responses have been submitted successfully.
               </div>
@@ -185,16 +175,15 @@ export default function FormWizard() {
 
   // Show question form
   return (
-    <div className="min-h-screen flex flex-col bg-black pb-20">
-      {/* Progress bar */}{state.currentStep > 0 && (
+    <div className="min-h-screen flex flex-col bg-black">
+      {state.currentStep > 0 && (
         <div className="w-full py-6 border-b border-[#2C2C2C]">
           <div className="max-w-2xl mx-auto">
-            <ProgressBar currentStep={state.currentStep} totalSteps={questions.length} />
+            <ProgressBar currentStep={state.currentStep} totalSteps={currentQuestions.length} />
           </div>
         </div>
       )}
       
-      {/* Main content */}
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-2xl">
           <AnimatePresence mode="wait">
@@ -210,7 +199,8 @@ export default function FormWizard() {
                 <h2 className="text-lg text-gray-400 mb-3 italic">{currentQuestion.title}</h2>
               )}
               <h1 className="text-4xl font-bold text-white mb-12 text-center max-w-3xl">{currentQuestion.text}</h1>
-                <div className="w-full space-y-4">                {currentQuestion.isContactForm ? (
+              <div className="w-full space-y-4">
+                {currentQuestion.isContactForm ? (
                   <ContactForm 
                     questionId={currentQuestion.id} 
                     fields={currentQuestion.fields || []}
@@ -245,40 +235,36 @@ export default function FormWizard() {
                   )
                 )}
               </div>
+
+              <div className="mt-12 flex gap-4 justify-between">
+                {!isFirstQuestion && (
+                  <button
+                    onClick={handlePrevious}
+                    className="px-6 py-2 text-white bg-[#2C2C2C] rounded-md hover:bg-[#3C3C3C]"
+                  >
+                    Previous
+                  </button>
+                )}
+                
+                {!isLastQuestion ? (
+                  <button
+                    onClick={handleNext}
+                    className="px-6 py-2 text-white bg-[#FCD34D] rounded-md hover:opacity-90"
+                    disabled={!state.answers[currentQuestion.id]}
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleReviewAnswers}
+                    className="px-6 py-2 text-white bg-[#0D6EFD] rounded-md hover:opacity-90"
+                  >
+                    Review Answers
+                  </button>
+                )}
+              </div>
             </motion.div>
           </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Fixed navigation buttons at bottom of screen - show for ALL questions */}
-      <div className="fixed bottom-0 left-0 w-full bg-black border-t border-gray-800 p-2 z-50">
-        <div className="max-w-md mx-auto flex px-4">
-          {!isFirstQuestion && (
-            <button
-              onClick={handlePrevious}
-              className="flex-1 mr-2 py-3 px-4 bg-[#1e293b] text-white font-medium rounded-lg transition-colors text-base"
-            >
-              Previous
-            </button>
-          )}
-          
-          {!isLastQuestion ? (
-            <button
-              onClick={(e) => handleNext(e)}
-              className="flex-1 ml-2 py-3 px-4 bg-[#0D6EFD] text-white font-medium rounded-lg transition-colors text-base"
-              disabled={!state.answers[currentQuestion.id]}
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              onClick={handleReviewAnswers}
-              className="flex-1 ml-2 py-3 px-4 bg-[#0D6EFD] text-white font-medium rounded-lg transition-colors text-base"
-              disabled={currentQuestion.isContactForm && !isFormComplete()}
-            >
-              Review Answers
-            </button>
-          )}
         </div>
       </div>
     </div>

@@ -77,7 +77,7 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
   };
 
   const labelVariants = {
-    focused: { y: -5, scale: 0.9, color: '#3B82F6' },
+    focused: { y: -5, scale: 0.9, color: '#FCD34D' },
     blurred: { y: 0, scale: 1, color: '#9CA3AF' }
   };
 
@@ -88,10 +88,8 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
         name: 'instagram', 
         label: 'Instagram Username', 
         type: 'text', 
-        required: true 
+        required: false 
       }];
-
-  // Check if all required fields are filled
 
   return (
     <motion.div 
@@ -113,7 +111,7 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
             variants={labelVariants}
             animate={focusedField === field.name ? 'focused' : 'blurred'}
           >
-            {field.label} {field.name !== 'lastName' && <span className="text-red-500">*</span>}
+            {field.label} {field.name !== 'lastName' && field.name !== 'instagram' && <span className="text-red-500">*</span>}
           </motion.label>
 
           {field.type === 'tel' ? (
@@ -123,10 +121,9 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
               countryCallingCodeEditable={false}
               international
               defaultCountry="US"
-              // className="!text-white !bg-[#2C2C2C] !border !border-gray-700 rounded-lg w-full px-4 py-3 focus:outline-none focus:border-blue-500"
               onFocus={() => setFocusedField(field.name)}
               onBlur={() => setFocusedField(null)}
-              required={field.name !== 'lastName'}
+              required={field.name !== 'lastName' && field.name !== 'instagram'}
             />
           ) : (
             <motion.div
@@ -137,11 +134,11 @@ export default function ContactForm({ questionId, fields }: ContactFormProps) {
                 type={field.type}
                 id={field.name}
                 name={field.name}
-                required={field.name !== 'lastName'}
+                required={field.required && field.name !== 'lastName' && field.name !== 'instagram'}
                 value={getValue(field.name)}
                 onChange={(e) => handleChange(field.name, e.target.value)}
                 placeholder={field.name === 'instagram' ? '@yourusername' : `Enter your ${field.label.toLowerCase()}`}
-                className="w-full px-4 py-3 bg-[#2C2C2C] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all duration-200"
+                className="w-full px-4 py-3 bg-[#2C2C2C] border border-[#FCD34D]/30 rounded-lg text-white focus:outline-none focus:border-[#FCD34D] transition-all duration-200"
                 onFocus={() => setFocusedField(field.name)}
                 onBlur={() => setFocusedField(null)}
               />
