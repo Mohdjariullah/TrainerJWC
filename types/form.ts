@@ -3,7 +3,7 @@ export interface ContactInfo {
   lastName: string;
   email: string;
   phone: string;
-  instagram?: string; // Add Instagram field
+  instagram?: string;
 }
 
 export interface FormAnswers {
@@ -14,6 +14,9 @@ export interface FormAnswers {
 export interface FormState {
   currentStep: number;
   answers: FormAnswers;
+  isSubmitting: boolean;
+  isSubmitted: boolean;
+  error: string | null;
 }
 
 // Animation types

@@ -101,19 +101,26 @@ export default function FormWizard() {
                       <div className="grid grid-cols-2 gap-2">
                         {state.answers[question.id] && typeof state.answers[question.id] === 'object' && (
                           <>
-                            <div className="text-gray-300">
-                              <strong>Name:</strong>{' '}
-                              {`${((state.answers[question.id] as any)?.firstName || '')} ${((state.answers[question.id] as any)?.lastName || '')}`}
-                            </div>
-                            <div className="text-gray-300">
-                              <strong>Email:</strong> {(state.answers[question.id] as any)?.email || ''}
-                            </div>
-                            <div className="text-gray-300">
-                              <strong>Phone:</strong> {(state.answers[question.id] as any)?.phone || ''}
-                            </div>
-                            <div className="text-gray-300">
-                              <strong>Instagram:</strong> {(state.answers[question.id] as any)?.instagram || ''}
-                            </div>
+                            {(() => {
+                              const contact = state.answers[question.id] as import('@/types/form').ContactInfo;
+                              return (
+                                <>
+                                  <div className="text-gray-300">
+                                    <strong>Name:</strong>{' '}
+                                    {`${contact?.firstName || ''} ${contact?.lastName || ''}`}
+                                  </div>
+                                  <div className="text-gray-300">
+                                    <strong>Email:</strong> {contact?.email || ''}
+                                  </div>
+                                  <div className="text-gray-300">
+                                    <strong>Phone:</strong> {contact?.phone || ''}
+                                  </div>
+                                  <div className="text-gray-300">
+                                    <strong>Instagram:</strong> {contact?.instagram || ''}
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </>
                         )}
                       </div>
@@ -139,7 +146,7 @@ export default function FormWizard() {
               <button
                 onClick={handleSubmit}
                 disabled={submissionStatus === 'loading'}
-                className={`px-8 py-3 bg-[#FFC400FF] text-black rounded-full font-medium ${
+                className={`px-8 py-3 bg-[#FFE44D] text-black rounded-full font-medium ${
                   submissionStatus === 'loading' 
                     ? 'opacity-75 cursor-wait' 
                     : 'hover:opacity-90 transition-opacity'

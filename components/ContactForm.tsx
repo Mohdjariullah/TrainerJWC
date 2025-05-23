@@ -6,19 +6,19 @@ import type { Value } from 'react-phone-number-input';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
-interface Field {
-  name: string;
-  label: string;
-  type: string;
-  required?: boolean;
-}
+import { ContactInfo } from '@/types/form';
 
 interface ContactFormProps {
   questionId: string;
-  fields: Field[];
+  fields: Array<{
+    name: string;
+    label: string;
+    type: string;
+    required?: boolean;
+  }>;
 }
 
-type ContactValues = Record<string, string>;
+type ContactValues = Partial<ContactInfo>;
 
 export default function ContactForm({ questionId, fields }: ContactFormProps) {
   const { state, dispatch } = useForm();

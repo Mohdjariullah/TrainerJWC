@@ -1,23 +1,11 @@
 'use client';
 
-import { createContext, useContext, useReducer, ReactNode } from 'react';
-import questions from '@/lib/questions';
+import React, { createContext, useContext, useReducer } from 'react';
+import questions, { parentQuestions } from '@/lib/questions';
+import { FormState, ContactInfo } from '@/types/form';
 
-// Updated: Allow each answer to be a string OR an object (e.g., contact form grouped fields)
-type AnswerValue = string | Record<string, string>;
-
-// Updated: FormState type
-interface FormState {
-  answers: Record<string, AnswerValue>;
-  currentStep: number;
-  isSubmitting: boolean;
-  isSubmitted: boolean;
-  error: string | null;
-}
-
-// Updated: Action allows both string and object answers
-type FormAction =
-  | { type: 'SET_ANSWER'; questionId: string; answer: AnswerValue }
+type FormAction = 
+  | { type: 'SET_ANSWER'; questionId: string; answer: string | string[] | ContactInfo }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
   | { type: 'GO_TO_STEP'; step: number }
@@ -26,28 +14,22 @@ type FormAction =
   | { type: 'SUBMIT_ERROR'; error: string }
   | { type: 'RESET_FORM' };
 
-// Context interface
-interface FormContextType {
-  state: FormState;
-  dispatch: React.Dispatch<FormAction>;
-  totalSteps: number;
-  canGoNext: boolean;
-  canGoPrevious: boolean;
-  isLastStep: boolean;
-}
-
-// Initial state
 const initialState: FormState = {
-  answers: {},
   currentStep: 0,
+  answers: {},
   isSubmitting: false,
   isSubmitted: false,
-  error: null,
+  error: null
 };
 
-const FormContext = createContext<FormContextType | undefined>(undefined);
+const FormContext = createContext<{
+  state: FormState;
+  dispatch: React.Dispatch<FormAction>;
+}>({
+  state: initialState,
+  dispatch: () => null
+});
 
-// Updated reducer
 function formReducer(state: FormState, action: FormAction): FormState {
   switch (action.type) {
     case 'SET_ANSWER':
@@ -59,9 +41,10 @@ function formReducer(state: FormState, action: FormAction): FormState {
         },
       };
     case 'NEXT_STEP':
+      const questionSet = state.answers.role === 'Parent' ? parentQuestions : questions;
       return {
         ...state,
-        currentStep: Math.min(state.currentStep + 1, questions.length - 1),
+        currentStep: Math.min(state.currentStep + 1, questionSet.length - 1),
       };
     case 'PREV_STEP':
       return {
@@ -71,7 +54,7 @@ function formReducer(state: FormState, action: FormAction): FormState {
     case 'GO_TO_STEP':
       return {
         ...state,
-        currentStep: Math.min(Math.max(action.step, 0), questions.length - 1),
+        currentStep: action.step,
       };
     case 'SUBMIT_START':
       return {
@@ -98,30 +81,18 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
-// Provider
-export function FormProvider({ children }: { children: ReactNode }) {
+export function FormProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(formReducer, initialState);
-
-  const totalSteps = questions.length;
-  const canGoNext = !!state.answers[questions[state.currentStep]?.id];
-  const canGoPrevious = state.currentStep > 0;
-  const isLastStep = state.currentStep === totalSteps - 1;
-
-  const value = {
-    state,
-    dispatch,
-    totalSteps,
-    canGoNext,
-    canGoPrevious,
-    isLastStep,
-  };
-
-  return <FormContext.Provider value={value}>{children}</FormContext.Provider>;
+  return (
+    <FormContext.Provider value={{ state, dispatch }}>
+      {children}
+    </FormContext.Provider>
+  );
 }
 
 export function useForm() {
   const context = useContext(FormContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useForm must be used within a FormProvider');
   }
   return context;

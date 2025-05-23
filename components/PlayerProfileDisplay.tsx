@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 
+
 interface PlayerProfileProps {
   profile: {
     tier: {
@@ -21,7 +22,7 @@ interface PlayerProfileProps {
       };
     };
     totalPoints: number;
-    answers: Record<string, any>;
+    answers: Record<string, string | number | string[] | undefined>;
   };
 }
 

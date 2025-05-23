@@ -1,6 +1,7 @@
 import type { PlayerProfile } from '@/types/playerProfile';
+import { FormAnswers } from '@/types/form';
 
-export function calculatePoints(answers: Record<string, string | number | string[] | undefined>): number {
+export function calculatePoints(answers: FormAnswers): number {
   let totalPoints = 0;
 
   console.log('Starting calculation with answers:', answers);
@@ -100,7 +101,7 @@ export function getProfileTier(points: number): string {
   }
 }
 
-export function calculatePlayerProfile(answers: Record<string, string | number | string[] | undefined>): PlayerProfile {
+export function calculatePlayerProfile(answers: FormAnswers): PlayerProfile {
   const points = calculatePoints(answers);
   console.log('Profile calculation - Final Points:', points);
   
