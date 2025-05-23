@@ -38,11 +38,10 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
     );
   }
 
-  const { tier, totalPoints } = profile;
+  const { tier } = profile;
   
   // Debug logging
   console.log('PlayerProfileDisplay - Profile:', profile);
-  console.log('PlayerProfileDisplay - Total Points:', totalPoints);
   console.log('PlayerProfileDisplay - Tier:', tier.title);
   
   const containerVariants = {
@@ -66,14 +65,6 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
     }
   };
 
-  const progressVariants = {
-    hidden: { width: 0 },
-    visible: {
-      width: `${(totalPoints / 28) * 100}%`,
-      transition: { duration: 1, ease: "easeOut", delay: 0.5 }
-    }
-  };
-
   return (
     <motion.div 
       className="min-h-screen bg-black text-white py-12 px-4"
@@ -94,19 +85,6 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
           >
             {tier.title}
           </motion.h2>
-          
-          <motion.div className="mb-8" variants={childVariants}>
-            <div className="flex justify-between text-sm mb-2">
-              <span>{totalPoints} points</span>
-              <span>28 max</span>
-            </div>
-            <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"
-                variants={progressVariants}
-              />
-            </div>
-          </motion.div>
 
           <motion.p 
             className="text-lg text-gray-300 leading-relaxed mb-6"
@@ -168,7 +146,7 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
               if (navigator.share) {
                 navigator.share({
                   title: 'My Basketball Profile',
-                  text: `I'm a ${tier.title} with ${totalPoints} points!`,
+                  text: `I'm a ${tier.title}!`,
                   url: window.location.href
                 })
               }
