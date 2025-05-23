@@ -5,7 +5,14 @@ import { useForm } from '@/context/FormContext';
 
 export default function NavigationButtons() {
   const router = useRouter();
-  const { state, dispatch, canGoNext, canGoPrevious, isLastStep, totalSteps } = useForm();
+  const { state, dispatch } = useForm();
+
+  // Define the total number of steps here
+  const totalSteps = 5; // <-- Set this to your actual number of steps
+
+  const canGoPrevious = state.currentStep > 0;
+  const canGoNext = state.currentStep < totalSteps - 1;
+  const isLastStep = state.currentStep === totalSteps - 1;
   
   const handlePrevious = () => {
     if (canGoPrevious) {

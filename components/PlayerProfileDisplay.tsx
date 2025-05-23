@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { ContactInfo } from '@/types/form';
 
 interface PlayerProfileProps {
   profile: {
@@ -21,7 +22,7 @@ interface PlayerProfileProps {
       };
     };
     totalPoints: number;
-    answers: Record<string, any>;
+    answers: Record<string, string | string[] | ContactInfo | undefined>;
   };
 }
 

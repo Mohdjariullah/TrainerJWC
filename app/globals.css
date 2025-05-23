@@ -180,7 +180,7 @@ input[type="range"] {
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  background: #FCD34D;
+  background: #d6ae2b;
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -188,7 +188,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-moz-range-thumb {
-  background: #FCD34D;
+  background: #c5a439;
   width: 16px;
   height: 16px;
   border-radius: 50%;

@@ -146,7 +146,7 @@ export default function FormWizard() {
               <button
                 onClick={handleSubmit}
                 disabled={submissionStatus === 'loading'}
-                className={`px-8 py-3 bg-[#FFE44D] text-black rounded-full font-medium ${
+                className={`px-8 py-3 bg-[#D3BA2DFF] text-black rounded-full font-medium ${
                   submissionStatus === 'loading' 
                     ? 'opacity-75 cursor-wait' 
                     : 'hover:opacity-90 transition-opacity'
@@ -228,7 +228,7 @@ export default function FormWizard() {
                     currentQuestion.options?.map((option) => (
                       <motion.div
                         key={option}
-                        whileTap={{ backgroundColor: '#FCD34D' }}
+                        whileTap={{ backgroundColor: '#d6ae2b' }}
                         transition={{ duration: 0.2 }}
                       >
                         <OptionButton 

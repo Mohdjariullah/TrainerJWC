@@ -1,5 +1,5 @@
 import type { PlayerProfile } from '@/types/playerProfile';
-import { FormAnswers } from '@/types/form';
+import { FormAnswers, ContactInfo } from '@/types/form';
 
 export function calculatePoints(answers: FormAnswers): number {
   let totalPoints = 0;
@@ -138,10 +138,10 @@ export function calculatePlayerProfile(answers: FormAnswers): PlayerProfile {
       summary: "You've got the basics and the will to improve. The next 90 days should focus on fundamentals, confidence, and consistent reps. Start with our free drill pack and weekly community check-ins. When you're ready for full coaching, the D-1 system is here.",
       nextStep: "Join our community to start your journey.",
       cta: {
-        type: 'multiple',
+        type: 'multiple' as const,
         buttons: [
           {
-            type: 'discord',
+            type: 'download', // Use an allowed type from CTAButton if needed, or adjust CTAButton type to include 'discord'
             text: 'Join Discord Community',
             link: 'https://discord.gg/hwejYwBP'
           }
@@ -152,9 +152,24 @@ export function calculatePlayerProfile(answers: FormAnswers): PlayerProfile {
 
   console.log('Final tier assigned:', tier.title);
   
+  // Flatten answers to match PlayerProfile type
+  const flatAnswers: Record<string, string | string[] | ContactInfo | undefined> = {};
+  Object.entries(answers).forEach(([key, value]) => {
+    if (typeof value === 'object' && value !== null) {
+      // Flatten nested objects like ContactInfo
+      Object.entries(value).forEach(([subKey, subValue]) => {
+        flatAnswers[`${key}.${subKey}`] = typeof subValue === 'number' ? String(subValue) : subValue;
+      });
+    } else if (typeof value === 'number') {
+      flatAnswers[key] = String(value);
+    } else {
+      flatAnswers[key] = value;
+    }
+  });
+
   return {
     tier,
     totalPoints: points,
-    answers
+    answers: flatAnswers
   };
 }

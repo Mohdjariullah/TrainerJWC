@@ -22,10 +22,12 @@ export interface QuestionScore {
   points: number;
 }
 
+import type { ContactInfo } from './form';
+
 export interface PlayerProfile {
-  tier: PlayerTier;
-  totalPoints: number;
-  answers: Record<string, string | number | string[] | undefined>;
+tier: PlayerTier;
+totalPoints: number;
+answers: Record<string, string | string[] | ContactInfo | undefined>;
 }
 
 export const PLAYER_TIERS: PlayerTier[] = [
