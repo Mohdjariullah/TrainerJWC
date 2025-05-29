@@ -10,8 +10,7 @@ declare global {
   }
 }
 
-export default function ClarityTestPage() {
-  useEffect(() => {
+export default function ClarityTestPage() {  useEffect(() => {
     // Check if Clarity is loaded
     const checkClarity = () => {
       if (typeof window !== 'undefined' && window.clarity) {
@@ -27,12 +26,27 @@ export default function ClarityTestPage() {
         }
       } else {
         console.log('⏳ Clarity not yet loaded, checking again...');
+        
+        // Check if script was blocked
+        const clarityScript = document.querySelector('script[src*="clarity.ms"]');
+        if (!clarityScript) {
+          console.warn('🚫 Clarity script not found - might be blocked by ad blocker');
+        }
+        
         setTimeout(checkClarity, 500);
       }
     };
 
     // Start checking after a short delay
     setTimeout(checkClarity, 1000);
+    
+    // Also check for blocking after 10 seconds
+    setTimeout(() => {
+      if (typeof window !== 'undefined' && !window.clarity) {
+        console.error('🚫 Microsoft Clarity failed to load after 10 seconds - likely blocked');
+        console.log('Common causes: Ad blockers, privacy extensions, corporate firewalls');
+      }
+    }, 10000);
   }, []);
 
   const handleTestClick = () => {
@@ -75,6 +89,17 @@ export default function ClarityTestPage() {
                   </ul>
                 </li>
               </ol>
+            </div>
+              <div className="bg-gray-800 p-4 rounded">
+              <h3 className="font-semibold mb-2">🚫 Is Clarity Being Blocked?</h3>
+              <p className="text-sm mb-2">If you see blocking errors, try these steps:</p>
+              <ul className="list-disc list-inside text-sm space-y-1">
+                <li><strong>Disable ad blockers</strong> (uBlock Origin, AdBlock Plus, etc.)</li>
+                <li><strong>Disable privacy extensions</strong> (Privacy Badger, Ghostery)</li>
+                <li><strong>Try incognito/private browsing</strong> mode</li>
+                <li><strong>Check browser console</strong> for blocking messages</li>
+                <li><strong>Whitelist clarity.ms</strong> in your ad blocker</li>
+              </ul>
             </div>
             
             <div className="bg-gray-800 p-4 rounded">
