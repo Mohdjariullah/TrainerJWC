@@ -115,7 +115,7 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
                 {tier.cta.buttons.map((button, index) => (
                   <motion.a
                     key={index}
-                    href={button.link}
+                    href="https://discord.gg/VDGk6tFXpk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 min-w-[200px] bg-gradient-to-r from-[#FFE44D] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FFC800] text-black font-medium py-4 px-6 rounded-xl text-center transition-all duration-200 hover:shadow-lg hover:shadow-[#FFE44D]/20"
@@ -124,8 +124,7 @@ export default function PlayerProfileDisplay({ profile }: PlayerProfileProps) {
                   >
                     {button.text}
                   </motion.a>
-                ))}
-              </div>
+                ))}              </div>
             ) : (
               tier.cta.link && (
                 <motion.a

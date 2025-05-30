@@ -31,17 +31,16 @@ export async function POST(request: Request) {
       q13_game_situations: data.answers.game_situations?.toString() || '',
       q14_physical_tools: data.answers.physical_tools?.toString() || '',
       q15_play_strengths: data.answers.play_strengths?.toString() || ''
-    };
-
-    // Make sure we're calculating points with the complete data
-    const calculationData = {
-      ...data.answers,
-      role: data.answers.role || 'Athlete',
-      age: data.answers.age || '14-18 (High School)'
-    };
+    };    // Make sure we're calculating points with the complete data exactly as frontend does
+    const calculationData = data.answers;
+    
+    console.log('Webhook - Raw answers received:', calculationData);
     
     const points = calculatePoints(calculationData);
     const profileTier = getProfileTier(points);
+    
+    console.log('Webhook - Calculated Points:', points);
+    console.log('Webhook - Assigned Tier:', profileTier);
     
     const enrichedData = {
       answers,
@@ -57,9 +56,7 @@ export async function POST(request: Request) {
         tier: profileTier
       },
       timestamp: new Date().toISOString()
-    };
-
-    console.log('Submitting to webhook:', enrichedData);
+    };    console.log('Submitting to webhook:', enrichedData);
     console.log('Calculated Points:', points);
     console.log('Assigned Tier:', profileTier);
     console.log('Instagram Username:', instagram);
@@ -69,9 +66,7 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        data: enrichedData
-      }),
+      body: JSON.stringify(enrichedData),
     });
 
     // Log the n8n response for debugging

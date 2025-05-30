@@ -89,8 +89,17 @@ export default function ClarityTestPage() {  useEffect(() => {
                   </ul>
                 </li>
               </ol>
+            </div>            <div className="bg-gray-800 p-4 rounded">
+              <h3 className="font-semibold mb-2">📱 Mobile Device Detection:</h3>
+              <p className="text-sm">
+                Device Type: {typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop'}
+              </p>
+              <p className="text-sm">
+                Touch Support: {typeof window !== 'undefined' && 'ontouchstart' in window ? 'Yes' : 'No'}
+              </p>
             </div>
-              <div className="bg-gray-800 p-4 rounded">
+            
+            <div className="bg-gray-800 p-4 rounded">
               <h3 className="font-semibold mb-2">🚫 Is Clarity Being Blocked?</h3>
               <p className="text-sm mb-2">If you see blocking errors, try these steps:</p>
               <ul className="list-disc list-inside text-sm space-y-1">
@@ -116,27 +125,26 @@ export default function ClarityTestPage() {  useEffect(() => {
           >
             Send Test Event to Clarity
           </button>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
             <div className="bg-gray-800 p-4 rounded-lg">
-              <h3 className="font-semibold mb-2">Test Click Tracking</h3>
-              <p className="text-sm mb-2">Click anywhere on this card to test click tracking</p>
-              <div className="h-20 bg-gray-700 rounded cursor-pointer hover:bg-gray-600 transition-colors flex items-center justify-center">
-                Click me!
+              <h3 className="font-semibold mb-2">Test Click/Touch Tracking</h3>
+              <p className="text-sm mb-2">Click or tap anywhere on this card</p>
+              <div className="h-20 bg-gray-700 rounded cursor-pointer hover:bg-gray-600 transition-colors flex items-center justify-center touch-manipulation">
+                Click/Tap me!
               </div>
             </div>
             
             <div className="bg-gray-800 p-4 rounded-lg">
-              <h3 className="font-semibold mb-2">Test Hover Tracking</h3>
-              <p className="text-sm mb-2">Hover over this area to test mouse tracking</p>
-              <div className="h-20 bg-gray-700 rounded hover:bg-blue-600 transition-colors flex items-center justify-center">
-                Hover me!
+              <h3 className="font-semibold mb-2">Test Hover/Touch Tracking</h3>
+              <p className="text-sm mb-2">Hover or touch this area</p>
+              <div className="h-20 bg-gray-700 rounded hover:bg-blue-600 transition-colors flex items-center justify-center touch-manipulation">
+                Hover/Touch me!
               </div>
             </div>
             
             <div className="bg-gray-800 p-4 rounded-lg">
               <h3 className="font-semibold mb-2">Test Scroll Tracking</h3>
-              <p className="text-sm mb-2">Scroll down to test scroll tracking</p>
+              <p className="text-sm mb-2">Scroll down to test mobile scroll tracking</p>
               <div className="h-20 bg-gray-700 rounded flex items-center justify-center">
                 Scroll down ↓
               </div>

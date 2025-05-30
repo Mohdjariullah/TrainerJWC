@@ -20,6 +20,10 @@ export default function FormWizard() {
   const isFirstQuestion = state.currentStep === 0;
   const isLastQuestion = state.currentStep === currentQuestions.length - 1;
   
+  /**
+   * Handles navigation to the previous step in the form wizard.
+   * Decrements the current step if not at the first step and optionally resets the summary view.
+   */
   const handlePrevious = () => {
     if (state.currentStep > 0) {
       dispatch({ type: 'PREV_STEP' });

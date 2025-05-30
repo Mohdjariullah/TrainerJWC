@@ -30,6 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-black">      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script type="text/javascript">{`
           (function() {
             try {
@@ -41,6 +42,12 @@ export default function RootLayout({
                   y.parentNode.insertBefore(t,y);
                 } else {
                   l.head.appendChild(t);
+                }
+                
+                // Mobile-specific configuration
+                if (c.clarity) {
+                  c.clarity('set', 'trackTouch', true);
+                  c.clarity('set', 'trackScroll', true);
                 }
               })(window, document, "clarity", "script", "rqueo5xfod");
             } catch (e) {
