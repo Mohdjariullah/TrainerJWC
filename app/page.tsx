@@ -37,21 +37,21 @@ export default function Home() {
                   priority
                 />
                 </div>
-              <div className="space-y-8 px-4 mt-16">
+                <div className="space-y-8 px-4 mt-4">
                 <h1 className="text-6xl font-bold text-white tracking-tight">
                   Train Like a Pro Evaluation
                 </h1>
                 <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
                   Take the 3-minute evaluation to find the exact gaps in your game—and get a custom action plan from former D-1 guard Jake Cioe.
                 </p>
-                <div className="space-y-6 pt-8">
+                <div className="space-y-4">
                   <motion.button 
-                    onClick={() => setStarted(true)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-10 py-4 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                  onClick={() => setStarted(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-10 py-4 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-200"
                   >
-                    Get Started
+                  Get Started
                   </motion.button>
                   <p className="text-gray-500">
                     Takes only 3 minutes. Get instant results.
